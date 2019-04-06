@@ -1,35 +1,95 @@
-CREATE TABLE student_info (
-	matric  varchar(9) PRIMARY KEY,
-	name    varchar(255) NOT NULL,
-	faculty varchar(3) NOT NULL
+CREATE TABLE Users (
+	userName	 VARCHAR(32), 
+	name	 	 VARCHAR(64) NOT NULL,
+	gender 	 	 VARCHAR(1) NOT NULL,
+	age 	 	 INTEGER NOT NULL,
+	phoneNumber  INTEGER NOT NULL,
+	PRIMARY KEY (userName)
 );
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000001A', 'Leslie Cole', 'SOC');
+CREATE TABLE Accounts (
+	userName VARCHAR(32),
+	pword VARCHAR(32) NOT NULL,
+	PRIMARY KEY (userName),
+	FOREIGN KEY (userName) REFERENCES Users(userName)
+);
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000002B', 'Myra Morgan', 'SOC');
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000003C', 'Raymond Benson', 'SOC');
+CREATE TABLE Admins (
+	userName	 VARCHAR(32),
+	PRIMARY KEY (userName),
+	FOREIGN KEY (userName) REFERENCES Users(userName)
+);
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000004D', 'Wendy Kelley', 'SOC');
+CREATE TABLE Employers (
+	userName	 	VARCHAR(32), 
+	numOfPostings	INTEGER,
+	PRIMARY KEY (userName),
+	FOREIGN KEY (userName) REFERENCES Users(userName)
+);
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000005E', 'Patrick Bowers', 'FOE');
+CREATE TABLE Employees (
+	userName	 		VARCHAR(32), 
+	numOfCompletedJobs	INTEGER,
+	PRIMARY KEY (userName),
+	FOREIGN KEY (userName) REFERENCES Users(userName)
+);
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000006F', 'Ralph Hogan', 'FOE');
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000007G', 'Cecil Rodriquez', 'SCI');
+CREATE TABLE Categories (
+	categoryName	VARCHAR(64),
+	PRIMARY KEY (categoryName)
+);
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000008H', 'Delia Ferguson', 'SCI');
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000009I', 'Frances Wright', 'SCI');
+CREATE TABLE Tasks (
+	taskID			INTEGER,
+	name			VARCHAR(64),
+	date			INTEGER,
+	duration		INTEGER,
+	pay				INTEGER,
+	categoryName	VARCHAR(64),
+	requirement		INTEGER,
+	PRIMARY KEY (taskID),
+	FOREIGN KEY (categoryName) REFERENCES Categories(categoryName)
+);
 
-INSERT INTO student_info (matric, name, faculty)
-VALUES ('A0000010J', 'Alyssa Sims', 'SCI');
+
+CREATE TABLE Assignments (
+	taskID			INTEGER,
+	employerID		VARCHAR(32),
+	employeeID		VARCHAR(32),
+	PRIMARY KEY (taskID),
+	FOREIGN KEY (taskID) REFERENCES Tasks(taskID),
+	FOREIGN KEY (employerID) REFERENCES Employers(userName),
+	FOREIGN KEY (employeeID) REFERENCES Employees(userName)
+);
+
+CREATE TABLE Schedules (
+	userName	 	VARCHAR(32), 
+	taskID			INTEGER,
+	date			INTEGER,
+	timeStart		INTEGER,
+	timeEnd			INTEGER,
+	PRIMARY KEY (userName, taskID),
+	FOREIGN KEY (userName) REFERENCES Employees(userName),
+	FOREIGN KEY (taskID) REFERENCES Assignments(taskID)
+);
+
+CREATE TABLE History (
+	userName	 	VARCHAR(32), 
+	taskID			INTEGER,
+	PRIMARY KEY (userName, taskID),
+	FOREIGN KEY (userName) REFERENCES Employees(userName),
+	FOREIGN KEY (taskID) REFERENCES Assignments(taskID)
+);
+
+
+CREATE TABLE Biddings (
+	employeeID		VARCHAR(32),
+	taskID			INTEGER,
+	timePlaced		INTEGER,
+	PRIMARY KEY (employeeID, taskID),
+	FOREIGN KEY (employeeID) REFERENCES Employees(userName),
+	FOREIGN KEY (taskID) REFERENCES Tasks(taskID)
+);
