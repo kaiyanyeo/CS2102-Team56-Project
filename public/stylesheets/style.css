@@ -5,3 +5,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+.jumbotron {
+  background-image: url(../images/banner-pic.jpg);
+  background-size: cover;
+}
