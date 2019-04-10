@@ -15,21 +15,20 @@ create table appuser.user(
 );
 
 create table appuser.admin(
-	adminUserName       varchar(100),
+	adminUserName       varchar(100) references appuser.user (userName),
 	adminId             char(10),
-	foreign key (adminUserName) references appuser.user (userName)
+	primary key (adminUserName) 
 );
 
 create table appuser.employer(
-	employerUserName    varchar(100),
-    foreign key (employerUserName) references appuser.user (userName)
+	employerUserName    varchar(100) references appuser.user (userName),
+    primary key (employerUserName) 
 );
 
 create table appuser.employee(
-	employeeUserName    varchar(100),
-	foreign key (employeeUserName) references appuser.user (userName)
+	employeeUserName    varchar(100) references appuser.user (userName),
+	primary key (employeeUserName) 
 );
-
 
 
 --------------------------------------------------------------
