@@ -83,27 +83,28 @@ function reg_user(req, res, next) {
 	var password = bcrypt.hashSync(req.body.password, salt);
 	pool.query(sql_queries.query.create_account, [username, password], (err, data1) => {
 		if (err) {
-			console.error("Error in creating account", err.detail);
+			console.error("Error in creating account", err);
 			res.redirect('/register?reg=fail');
 		} else {
 			pool.query(sql_queries.query.add_user, [firstname, lastname, username, gender, birthdate], (err, data2) => {
 				if (err) {
-					console.error("Error in adding user", err.detail);
+					console.error("Error in adding user", err);
 					res.redirect('/register?reg=fail');
 				} else {
-					console.log('====');
-					console.log(data2);
-					// req.login({
-					// 	username: username,
-					// 	passwordHash: password,
-					// }, function (err) {
-					// 	if (err) {
-					// 		console.log('err');
-					// 		return res.redirect('/');
-					// 	} else {
-					// 		return res.redirect('/');
-					// 	}
-					// });
+					req.login({
+						username: username,
+						passwordHash: password,
+						firstname: firstname,
+						lastname: lastname,
+						status: 'Bronze'
+					}, function (err) {
+						if (err) {
+							console.log('login err');
+							return res.redirect('/register?reg=fail');
+						} else {
+							return res.redirect('/');
+						}
+					});
 				}
 			});
 		}
