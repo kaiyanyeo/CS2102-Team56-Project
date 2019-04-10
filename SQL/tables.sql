@@ -37,7 +37,7 @@ create schema adminAction;
 
 create table adminAction.manages(
 	adminUserName       varchar(100),
-	taskId              char(10),
+	taskId              serial,
 	foreign key (adminUserName) references appuser.user (userName),
 	foreign key (taskId) references employerAction.task (taskId)
 );
@@ -49,24 +49,17 @@ create table adminAction.manages(
 
 create schema employerAction;
 
-create table employerAction.posts(
-	employerUserName   varchar(100),
-	taskId             char(10),
-	foreign key (employerUserName) references appuser.user (userName),
-	foreign key (taskId) references employerAction.task (taskId)
-);
-
 create table employerAction.task(
-	taskId             char(10) primary key,
-	categoryName       varchar(100),
+	taskId             serial primary key,
+	employerUserName   varchar(100) references appuser.uesr(userName),
+	categoryName       varchar(100) references taskAction.category(categoryName),
 	startTime          timestamp not null,
 	endTime            timestamp not null,
 	taskName           varchar(100) not null,
-	type               varchar(30),
-	pay                numeric not null,
-	requirement        text
+	payAmt             numeric not null CHECK (payAmt > 0),
+	requirement        text,
+	CHECK (startTime <=	 endTime)
 );
-
 
 ------------------------------------------------------------
 
@@ -77,13 +70,14 @@ create table employeeAction.bidding(
 	employeeUserName  varchar(100),
 	taskId            char(10),
 	timePlaced        timestamp,
-	foreign key (taskId) references employerAction.task (taskId),
+	foreign key (taskId) references employerAction.task (taskId) ON DELETE CASCADE,
 	foreign key (employeeUserName) references appuser.user (userName)
 );
 
 
 create table employeeAction.schedule(
 	employeeUserName  varchar(100),
+	taskId            serial references employerAction.task (taskId) ON DELETE CASCADE,
 	startTime         timestamp not null,
 	endTime           timestamp not null,
 	foreign key (employeeUserName) references appuser.user (userName)
@@ -92,6 +86,8 @@ create table employeeAction.schedule(
 
 create table employeeAction.history(
 	employeeUserName  varchar(100),
+	taskName          varchar(100) not null,
+	requirement       text,
 	rating            integer not null,
 	comments          text not null,
 	foreign key (employeeUserName) references appuser.user (userName)
@@ -108,18 +104,10 @@ create table taskAction.category(
 	description       text
 );
 
-
-create table taskAction.belongs(
-	taskId            char(10),
-	categoryName      varchar(100),
-    foreign key (taskId) references employerAction.task (taskId),
-    foreign key (category Name) references taskAction.category (categoryName)
-);
-
 create table taskAction.assigns(
    employerUserName   varchar(100),
    employeeUserName   varchar(100),
-   taskId             char(10),
+   taskId             serial ON DELETE CASCADE,
    foreign key (taskId) references employerAction.task (taskId),
    foreign key (employerUserName) references appuser.user (userName),
    foreign key (employeeUserName) references appuser.user (userName)
