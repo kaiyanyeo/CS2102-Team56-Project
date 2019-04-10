@@ -1,46 +1,46 @@
-create schema appuser;
+CREATE SCHEMA Users;
 
-create table appuser.account(
-	userName        varchar(100),
-	password        varchar(25) not null,
-	foreign key (userName) references appuser.user (userName)
+CREATE TABLE Users.account(
+	userName        VARCHAR(100),
+	passwordHash    VARCHAR(64) NOT NULL,
+	FOREIGN KEY (userName) REFERENCES Users.user (userName)
 );
 
-create table appuser.user(
-	userName            varchar(100) primary key,
-	name                varchar(100),
-	gender              char(1),
-	birthDate           date,
-    phoneNumber         varchar(15)
+CREATE TABLE Users.user(
+	userName            VARCHAR(100) PRIMARY KEY,
+	name                VARCHAR(100),
+	gender              CHAR(1),
+	birthDate           DATE,
+    phoneNumber         VARCHAR(15)
 );
 
-create table appuser.admin(
-	adminUserName       varchar(100),
-	adminId             char(10),
-	foreign key (adminUserName) references appuser.user (userName)
+CREATE TABLE Users.admin(
+	adminUserName       VARCHAR(100),
+	adminId             CHAR(10),
+	FOREIGN KEY (adminUserName) REFERENCES Users.user (userName)
 );
 
-create table appuser.employer(
-	employerUserName    varchar(100),
-    foreign key (employerUserName) references appuser.user (userName)
+CREATE TABLE Users.employer(
+	employerUserName    VARCHAR(100),
+    FOREIGN KEY (employerUserName) REFERENCES Users.user (userName)
 );
 
-create table appuser.employee(
-	employeeUserName    varchar(100),
-	foreign key (employeeUserName) references appuser.user (userName)
+CREATE TABLE Users.employee(
+	employeeUserName    VARCHAR(100),
+	FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
 );
 
 
 
 --------------------------------------------------------------
 
-create schema adminAction;
+CREATE SCHEMA AdminActions;
 
-create table adminAction.manages(
-	adminUserName       varchar(100),
-	taskId              char(10),
-	foreign key (adminUserName) references appuser.user (userName),
-	foreign key (taskId) references employerAction.task (taskId)
+CREATE TABLE AdminActions.manages(
+	adminUserName       VARCHAR(100),
+	taskId              CHAR(10),
+	FOREIGN KEY (adminUserName) REFERENCES Users.user (userName),
+	FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId)
 );
 
 
@@ -48,82 +48,82 @@ create table adminAction.manages(
 
 
 
-create schema employerAction;
+CREATE SCHEMA EmployerActionss;
 
-create table employerAction.posts(
-	employerUserName   varchar(100),
-	taskId             char(10),
-	foreign key (employerUserName) references appuser.user (userName),
-	foreign key (taskId) references employerAction.task (taskId)
+CREATE TABLE EmployerActions.posts(
+	employerUserName   VARCHAR(100),
+	taskId             CHAR(10),
+	FOREIGN KEY (employerUserName) REFERENCES Users.user (userName),
+	FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId)
 );
 
-create table employerAction.task(
-	taskId             char(10) primary key,
-	categoryName       varchar(100),
-	startTime          timestamp not null,
-	endTime            timestamp not null,
-	taskName           varchar(100) not null,
-	type               varchar(30),
-	pay                numeric not null,
-	requirement        text
+CREATE TABLE EmployerActions.task(
+	taskId             CHAR(10) PRIMARY KEY,
+	categoryName       VARCHAR(100),
+	startTime          TIMESTAMP NOT NULL,
+	endTime            TIMESTAMP NOT NULL,
+	taskName           VARCHAR(100) NOT NULL,
+	type               VARCHAR(30),
+	pay                NUMERIC NOT NULL,
+	requirement        TEXT
 );
 
 
 ------------------------------------------------------------
 
 
-create schema employeeAction;
+CREATE SCHEMA EmployeeActions;
 
-create table employeeAction.bidding(
-	employeeUserName  varchar(100),
-	taskId            char(10),
-	timePlaced        timestamp,
-	foreign key (taskId) references employerAction.task (taskId),
-	foreign key (employeeUserName) references appuser.user (userName)
+CREATE TABLE EmployeeActions.bidding(
+	employeeUserName  VARCHAR(100),
+	taskId            CHAR(10),
+	timePlaced        TIMESTAMP,
+	FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId),
+	FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
 );
 
 
-create table employeeAction.schedule(
-	employeeUserName  varchar(100),
-	startTime         timestamp not null,
-	endTime           timestamp not null,
-	foreign key (employeeUserName) references appuser.user (userName)
+CREATE TABLE EmployeeActions.schedule(
+	employeeUserName  VARCHAR(100),
+	startTime         TIMESTAMP NOT NULL,
+	endTime           TIMESTAMP NOT NULL,
+	FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
 );
 
 
-create table employeeAction.history(
-	employeeUserName  varchar(100),
-	rating            integer not null,
-	comments          text not null,
-	foreign key (employeeUserName) references appuser.user (userName)
+CREATE TABLE EmployeeActions.history(
+	employeeUserName  VARCHAR(100),
+	rating            INTEGER NOT NULL,
+	comments          TEXT NOT NULL,
+	FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
 );
 
 
 -----------------------------------------------------------
 
 
-create schema taskAction;
+CREATE schema TaskActions;
 
-create table taskAction.category(
-	categoryName      varchar(100) primary key,
-	description       text
+CREATE TABLE TaskActions.category(
+	categoryName      VARCHAR(100) PRIMARY KEY,
+	description       TEXT
 );
 
 
-create table taskAction.belongs(
-	taskId            char(10),
-	categoryName      varchar(100),
-    foreign key (taskId) references employerAction.task (taskId),
-    foreign key (category Name) references taskAction.category (categoryName)
+CREATE TABLE TaskActions.belongs(
+	taskId            CHAR(10),
+	categoryName      VARCHAR(100),
+    FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId),
+    FOREIGN KEY (categoryname) REFERENCES TaskActions.category (categoryName)
 );
 
-create table taskAction.assigns(
-   employerUserName   varchar(100),
-   employeeUserName   varchar(100),
-   taskId             char(10),
-   foreign key (taskId) references employerAction.task (taskId),
-   foreign key (employerUserName) references appuser.user (userName),
-   foreign key (employeeUserName) references appuser.user (userName)
+CREATE TABLE TaskActions.assigns(
+   employerUserName   VARCHAR(100),
+   employeeUserName   VARCHAR(100),
+   taskId             CHAR(10),
+   FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId),
+   FOREIGN KEY (employerUserName) REFERENCES Users.user (userName),
+   FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
 );
 
 ----------------------------------------------------------

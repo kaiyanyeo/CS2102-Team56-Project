@@ -10,3 +10,32 @@ a {
   background-image: url(../images/banner-pic.jpg);
   background-size: cover;
 }
+
+/* Registration Page */
+.register-container {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.form-register {
+  width: 100%;
+  max-width: 550px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-register .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.form-register .form-control:focus {
+  z-index: 2;
+}
