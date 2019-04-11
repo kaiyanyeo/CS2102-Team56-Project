@@ -26,14 +26,45 @@
 <body>
 
 	<header>
-		<% include partials/header %>
+		<%- include partials/header %>
 	</header>
 	<main>
-		<h1>DASHBOARD TEST</h1>
+		<% if(tasks) { %>
+		<div class="container">
+			<div class="row">
+				<img src="images/checklist.png" class="img-thumbnail mx-auto d-block" style="width:15%; height:15%; border:0;">
+			</div>
+			<h5 class="font-weight-bold text-center">Tasks you have posted!</h5>
+			<br />
+			<div id="accordion">
+				<% tasks.forEach(function(task) { %>
+				<div class="accordion" id="accordionExample">
+					<div class="card">
+						<div class="card-header" id="heading<%= task.taskid %>">
+							<h2 class="mb-0">
+								<button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+									data-target="#collapse<%= task.taskid %>" aria-expanded="false" aria-controls="collapse<%= task.taskid %>">
+									<%= task.title %>
+								</button>
+							</h2>
+						</div>
+						<div id="collapse<%= task.taskid %>" class="collapse" aria-labelledby="heading<%= task.taskid %>"
+							data-parent="#accordionExample">
+							<div class="card-body">
+								you probably haven't heard of them accusamus labore sustainable VHS.
+							</div>
+						</div>
+					</div>
+					<% }); %>
+				</div>
+			</div>
+			<% } else { %>
+				<%- include partials/notask %>
+			<% } %>
 	</main>
 
 	<footer>
-		<% include partials/footer %>
+		<%- include partials/footer %>
 	</footer>
 
 	<!-- Bootstrap core JavaScript

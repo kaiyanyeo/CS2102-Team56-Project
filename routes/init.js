@@ -86,7 +86,17 @@ function dashboard(req, res, next) {
 		firstname: req.user.firstname,
 		lastname: req.user.lastname
 	}
-	res.render('dashboard', { auth: true, userinfo: info });
+
+	pool.query(sql_queries.query.retrieve_tasks, [req.user.username], (err, data) => {
+		if(err) {
+			console.log("Error in retrieving tasks", err);
+			res.render('dashboard', { auth: true, userinfo: info, tasks: null });
+		} else {
+			var tasks = data.rows;
+			console.log(data.rows);
+			res.render('dashboard', { auth: true, userinfo: info, tasks: tasks });
+		}
+	});
 }
 
 // // POST

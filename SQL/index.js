@@ -10,6 +10,9 @@ sql.query = {
     add_employer: 'INSERT INTO Employers(username) VALUES ($1)',
     add_employee: 'INSERT INTO Employees(username) VALUES ($1)',
 
+    // Get tasks
+    retrieve_tasks: 'SELECT * FROM Tasks WHERE employername = $1',
+
     // Get Number of postings by each employer
     get_postings: 'SELECT count(*) from Employers e1 LEFT JOIN employerAction.posts p1 ON e1.employerUserName = p1.employerUserName GROUP BY e1.employerUserName',
 
