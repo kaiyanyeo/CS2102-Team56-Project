@@ -223,7 +223,7 @@ function edit_task(req, res, next) {
 	var payamt = req.body.payamt;
 	var taskid = req.body.taskid;
 
-	pool.query(sql_queries.query.edit_task, [title, startdate, duration, payamt, ], (err, data1) => {
+	pool.query(sql_queries.query.edit_task, [title, startdate, duration, payamt, taskid], (err, data1) => {
 		if (err) {
 			console.error("Error in editing task", err);
 			res.redirect('/dashboard?edit=fail');
