@@ -19,7 +19,7 @@ function initRouter(app) {
 	/* PROTECTED GET */
 	app.get('/register', passport.antiMiddleware(), register);
 	app.get('/dashboard', passport.authMiddleware(), dashboard);
-	// app.get('/password' , passport.antiMiddleware(), retrieve );
+	app.get('/browse' , passport.authMiddleware(), browse );
 
 	/* PROTECTED POST */
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
@@ -87,7 +87,7 @@ function dashboard(req, res, next) {
 		lastname: req.user.lastname
 	}
 
-	pool.query(sql_queries.query.retrieve_tasks, [req.user.username], (err, data) => {
+	pool.query(sql_queries.query.get_own_tasks, [req.user.username], (err, data) => {
 		if(err) {
 			console.log("Error in retrieving tasks", err);
 			res.render('dashboard', { auth: true, userinfo: info, tasks: null });
@@ -95,6 +95,25 @@ function dashboard(req, res, next) {
 			var tasks = data.rows;
 			console.log(data.rows);
 			res.render('dashboard', { auth: true, userinfo: info, tasks: tasks });
+		}
+	});
+}
+
+function browse(req, res, next) {
+	var info = {
+		user: req.user.username,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname
+	}
+
+	pool.query(sql_queries.query.get_other_tasks, [req.user.username], (err, data) => {
+		if(err) {
+			console.log("Error in getting other tasks", err);
+			res.render('browse', { auth: true, userinfo: info, tasks: null });
+		} else {
+			var tasks = data.rows;
+			console.log(data.rows);
+			res.render('browse', { auth: true, userinfo: info, tasks: tasks });
 		}
 	});
 }
