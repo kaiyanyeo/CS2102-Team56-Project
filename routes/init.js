@@ -91,18 +91,31 @@ function reg_user(req, res, next) {
 					console.error("Error in adding user", err);
 					res.redirect('/register?reg=fail');
 				} else {
-					req.login({
-						username: username,
-						passwordHash: password,
-						firstname: firstname,
-						lastname: lastname,
-						status: 'Bronze'
-					}, function (err) {
+					pool.query(sql_queries.query.add_employer, [username], (err, data1) => {
 						if (err) {
-							console.log('login err');
-							return res.redirect('/register?reg=fail');
+							console.error("Error in adding employer", err);
+							res.redirect('/register?reg=fail');
 						} else {
-							return res.redirect('/');
+							pool.query(sql_queries.query.add_employee, [username], (err, data1) => {
+								if (err) {
+									console.error("Error in adding employee", err);
+									res.redirect('/register?reg=fail');
+								} else {
+									req.login({
+										username: username,
+										passwordHash: password,
+										firstname: firstname,
+										lastname: lastname,
+									}, function (err) {
+										if (err) {
+											console.log('login err');
+											return res.redirect('/register?reg=fail');
+										} else {
+											return res.redirect('/');
+										}
+									});
+								}
+							});
 						}
 					});
 				}

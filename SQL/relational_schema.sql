@@ -5,12 +5,12 @@ DROP TABLE IF EXISTS Biddings CASCADE;
 DROP TABLE IF EXISTS Assigns CASCADE;
 DROP TABLE IF EXISTS Posts CASCADE;
 DROP TABLE IF EXISTS Tasks CASCADE;
-DROP TABLE IF EXISTS Accounts CASCADE;
 DROP TABLE IF EXISTS Admins CASCADE;
 DROP TABLE IF EXISTS Employers CASCADE;
 DROP TABLE IF EXISTS Employees CASCADE;
-DROP TABLE IF EXISTS Categories CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
+DROP TABLE IF EXISTS Accounts CASCADE;
+DROP TABLE IF EXISTS Categories CASCADE;
 
 -- Create tables
 -- Accounts are owned by Users
@@ -47,7 +47,7 @@ CREATE TABLE Employers (
 
 CREATE TABLE Employees (
 	userName	 		VARCHAR(32), 
-	numOfCompletedJobs	INTEGER,
+	numOfCompletedJobs	INTEGER DEFAULT 0,
 	PRIMARY KEY (userName),
 	FOREIGN KEY (userName) REFERENCES Users(userName)
 );
@@ -132,10 +132,11 @@ CREATE OR REPLACE FUNCTION create_account() RETURNS trigger AS $ret$
 		IF EXISTS(SELECT 1 FROM Accounts a WHERE a.userName = NEW.userName) THEN
 			RAISE EXCEPTION 'Username % exists', NEW.userName;
 		END IF;
+		RETURN NEW;
 	END;
 $ret$ LANGUAGE plpgsql;
 
 CREATE TRIGGER prevent_duplicate_accounts
-	BEFORE INSERT ON Account
+	BEFORE INSERT ON Accounts
 	FOR EACH ROW
 	EXECUTE PROCEDURE create_account();
