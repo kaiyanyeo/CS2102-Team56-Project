@@ -54,23 +54,24 @@ CREATE TABLE Employees (
 
 -- Categories that Tasks may belong to
 CREATE TABLE Categories (
-	categoryName	    VARCHAR(64),
-    categoryDescription TEXT,
-	PRIMARY KEY (categoryName)
+	name	    VARCHAR(64),
+    description TEXT,
+	PRIMARY KEY (name)
 );
 
 -- Tasks are general chores posted by Employers
 CREATE TABLE Tasks (
-	taskID			INTEGER,
-	taskTitle       VARCHAR(64),
+	taskID			SERIAL,
+	title			VARCHAR(64),
     employerName    VARCHAR(32) NOT NULL,
+	startTime		TIMESTAMP NOT NULL,
 	duration		INTEGER NOT NULL,
-	payAmt          INTEGER,
+	payAmt          NUMERIC NOT NULL CHECK(payAmt>=0),
 	categoryName	VARCHAR(64),
-	requirement		INTEGER,
+	requirement		INTEGER,	-- given as option on front end
 	PRIMARY KEY (taskID),
     FOREIGN KEY (employerName) REFERENCES Employers(userName),
-	FOREIGN KEY (categoryName) REFERENCES Categories(categoryName)
+	FOREIGN KEY (categoryName) REFERENCES Categories(name)
 );
 
 -- Post details of a particular Task by a particular Employer
@@ -95,20 +96,20 @@ CREATE TABLE Assigns (
 
 -- Schedule of a particular Employee's Tasks
 CREATE TABLE Schedules (
-	userName	 	VARCHAR(32), 
-	taskID			INTEGER,
+	employeeID	 	VARCHAR(32), 
+	taskID			SERIAL,
 	taskDate        INTEGER,
 	timeStart		DATE,
 	timeEnd			DATE,
-	PRIMARY KEY (userName, taskID),
-	FOREIGN KEY (userName) REFERENCES Employees(userName),
+	PRIMARY KEY (employeeID, taskID),
+	FOREIGN KEY (employeeID) REFERENCES Employees(userName),
 	FOREIGN KEY (taskID) REFERENCES Assigns(assignID)
 );
 
 -- History of completed Tasks by an Employee
 CREATE TABLE History (
 	userName	 	VARCHAR(32), 
-	taskID			INTEGER,
+	taskID			SERIAL,
     rating          INTEGER,
     comments        TEXT,
 	PRIMARY KEY (userName, taskID),
@@ -123,7 +124,7 @@ CREATE TABLE Biddings (
 	timePlaced		DATE,
 	PRIMARY KEY (employeeID, taskID),
 	FOREIGN KEY (employeeID) REFERENCES Employees(userName),
-	FOREIGN KEY (taskID) REFERENCES Tasks(taskID)
+	FOREIGN KEY (taskID) REFERENCES Tasks(taskID) ON DELETE CASCADE
 );
 
 -- Prevent creation of duplicate accounts
@@ -140,3 +141,4 @@ CREATE TRIGGER prevent_duplicate_accounts
 	BEFORE INSERT ON Accounts
 	FOR EACH ROW
 	EXECUTE PROCEDURE create_account();
+

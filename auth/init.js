@@ -52,7 +52,7 @@ function findUser(username, callback) {
 passport.serializeUser(function (user, done) {
     // saved to session
     // req.session.passport.user = {username:...}
-    done(null, user.userName);
+    done(null, user.username);
 })
 
 passport.deserializeUser(function (username, done) {

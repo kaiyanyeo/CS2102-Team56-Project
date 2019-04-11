@@ -65,8 +65,6 @@ function index(req, res, next) {
 	if (!req.isAuthenticated()) {
 		res.render('index', { auth: false, userInfo: null });
 	} else {
-		console.log('index func:');
-		console.log(req.user);
 		var info = {
 			user: req.user.username,
 			firstname: req.user.firstname,
@@ -146,8 +144,8 @@ function reg_user(req, res, next) {
 
 // // LOGOUT
 function logout(req, res, next) {
-	req.session.destroy()
-	req.logout()
+	req.session.destroy();
+	req.logout();
 	res.redirect('/')
 }
 
