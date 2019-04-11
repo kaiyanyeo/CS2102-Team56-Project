@@ -97,6 +97,8 @@ function reg_user(req, res, next) {
 	var birthdate = req.body.birthdate;
 	var username = req.body.username;
 	var password = bcrypt.hashSync(req.body.password, salt);
+
+	// Transaction to be done in sequence
 	pool.query(sql_queries.query.create_account, [username, password], (err, data1) => {
 		if (err) {
 			console.error("Error in creating account", err);

@@ -36,7 +36,7 @@ function findUser(username, callback) {
         } else if (data.rows.length == 1) {
             // user object attaches to the original request as req.user
             return callback(null, {
-                userName: data.rows[0].username,
+                username: data.rows[0].username,
                 passwordHash: data.rows[0].pword,
                 firstname: data.rows[0].firstname,
                 lastname: data.rows[0].lastname
