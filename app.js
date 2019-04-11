@@ -7,9 +7,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const bodyParser = require('body-parser')
-// const session = require('express-session')
+const session = require('express-session')
 const passport = require('passport')
-const bcrypt = require('bcrypt')
 
 const app = express();
 // Body Parser Config
@@ -20,11 +19,11 @@ app.use(bodyParser.urlencoded({
 // Authentication setup
 require('dotenv').load();
 require('./auth').init(app);
-// app.use(session({
-//   secret: process.env.SECRET,
-//   resave: true,
-//   saveUninitialized: true
-// }))
+app.use(session({
+  secret: process.env.SECRET,
+  resave: true,
+  saveUninitialized: true
+}))
 
 app.use(passport.initialize());
 app.use(passport.session());

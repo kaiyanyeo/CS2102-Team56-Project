@@ -18,6 +18,7 @@ function initRouter(app) {
 
 	/* PROTECTED GET */
 	app.get('/register', passport.antiMiddleware(), register);
+	app.get('/dashboard', passport.authMiddleware(), dashboard);
 	// app.get('/password' , passport.antiMiddleware(), retrieve );
 
 	/* PROTECTED POST */
@@ -30,7 +31,7 @@ function initRouter(app) {
 	}));
 
 	/* LOGOUT */
-	// app.get('/logout', passport.authMiddleware(), logout);
+	app.get('/logout', passport.authMiddleware(), logout);
 }
 
 
@@ -61,6 +62,7 @@ function initRouter(app) {
 
 // GET
 function index(req, res, next) {
+	console.log(req.user);
 	if (!req.isAuthenticated()) {
 		res.render('index', { page: '', auth: false });
 	} else {
@@ -71,6 +73,15 @@ function index(req, res, next) {
 function register(req, res, next) {
 	var regResult = req.query.reg;
 	res.render('register', { page: 'register', auth: false, regFail: regResult });
+}
+
+function dashboard(req, res, next) {
+	var info = {
+		user: req.query.username,
+		firstname: req.query.firstname,
+		lastname: req.query.lastname
+	}
+	res.render('dashboard', { userinfo: info });
 }
 
 // // POST
@@ -111,7 +122,8 @@ function reg_user(req, res, next) {
 											console.log('login err');
 											return res.redirect('/register?reg=fail');
 										} else {
-											return res.redirect('/');
+											console.log('user registered');
+											return res.redirect('/dashboard');
 										}
 									});
 								}
@@ -126,10 +138,10 @@ function reg_user(req, res, next) {
 
 
 // // LOGOUT
-// function logout(req, res, next) {
-// 	req.session.destroy()
-// 	req.logout()
-// 	res.redirect('/')
-// }
+function logout(req, res, next) {
+	req.session.destroy()
+	req.logout()
+	res.redirect('/')
+}
 
 module.exports = initRouter;
