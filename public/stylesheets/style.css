@@ -39,3 +39,10 @@ a {
 .form-register .form-control:focus {
   z-index: 2;
 }
+
+input[readonly]#taskid {
+  background-color:transparent;
+  border: 0;
+  font-size: 1em;
+  width: 2em;
+}

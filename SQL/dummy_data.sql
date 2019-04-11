@@ -2,7 +2,6 @@ DELETE from biddings;
 DELETE from history;
 DELETE from schedules;
 DELETE from assigns;
-DELETE from posts;
 DELETE from tasks;
 DELETE from categories;
 DELETE from employers;
@@ -64,16 +63,16 @@ INSERT INTO Categories (name) VALUES
 
 -- INSERT TASKS
 INSERT INTO TASKS(title, employername, startdate, duration, payamt, categoryname, requirement) VALUES
-('Wash car', 'test@hello.com', '2019-04-20', 1, 12, 'Service', 1),
-('Build IKEA furniture', 'dfsad@example.com', '2019-04-28', 5, 48, 'Manual Labour', 1),
-('Package delivery', 'test@hello.com', '2019-04-28', 1, 20, 'Driving', 1),
-('Wash aircon', 'dfsad@example.com', '2019-04-24', 6, 65, 'Specialised', 2),
-('Need plumber for leaky tap', 'dfsad@example.com', '2019-04-19', 6, 65, 'Specialised', 2),
-('Babysitting', 'test@hello.com', '2019-05-01', 2, 45, 'Household', 1);
-('Help me move house', 'bobby@hotmail.com', '2019-05-11', 8, 100, 'Manual Labour', 0),
-('Mow Lawn', 'mary@gmail.com','2019-05-16', 1, 8, 'Manual Labour', 0),
-('Recover files from broken hard disk', 'mark@yahoo.com', '2019-05-16', 3, 25, 'Tech Support', 1),
-('Finish my thesis for me', 'bobby@hotmail.com', '2019-06-19', 8, 50, 'Proofreading', 1);
+('Wash car', 'test@hello.com', '2019-04-20 19:23:45', 1, 12, 'Service', 1),
+('Build IKEA furniture', 'dfsad@example.com', '2019-04-28 11:21:44', 5, 48, 'Manual Labour', 1),
+('Package delivery', 'test@hello.com', '2019-04-28 19:21:05', 1, 20, 'Driving', 1),
+('Wash aircon', 'dfsad@example.com', '2019-04-24 12:25:41', 6, 65, 'Specialised', 2),
+('Need plumber for leaky tap', 'dfsad@example.com', '2019-04-19 15:27:45', 6, 65, 'Specialised', 2),
+('Babysitting', 'test@hello.com', '2019-05-01 09:20:05', 2, 45, 'Household', 1),
+('Help me move house', 'bobby@hotmail.com', '2019-05-11 14:03:15', 8, 100, 'Manual Labour', 0),
+('Mow Lawn', 'mary@gmail.com','2019-05-16 16:23:49', 1, 8, 'Manual Labour', 0),
+('Recover files from broken hard disk', 'mark@yahoo.com', '2019-05-16 12:03:16', 3, 25, 'Tech Support', 1),
+('Finish my thesis for me', 'bobby@hotmail.com', '2019-06-19 10:18:38', 8, 50, 'Proofreading', 1);
 
 
 -- INSERT INTO Tasks (taskID, title, employerName, startDate, startTime, endTime, duration, payAmt, categoryName, requirement) VALUES
@@ -98,7 +97,7 @@ INSERT INTO Assigns (taskID, employeeID) VALUES
 (3, 'mary@gmail.com'),	-- not completed
 (10, 'mark@yahoo.com');
 
-INSERT INTO Schedules (employeeID, assignid, taskDate, timeStart, timeEnd) VALUES
+INSERT INTO Schedules (employeeID, assignid) VALUES
 ('test@hello.com', 1),
 ('mary@gmail.com', 2);
 

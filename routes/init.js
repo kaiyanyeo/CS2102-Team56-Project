@@ -24,7 +24,7 @@ function initRouter(app) {
 
 	/* PROTECTED POST */
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
-	// app.post('/edit_task', passport.antiMiddleware(), edit_task);
+	app.post('/edit_task', passport.authMiddleware(), edit_task);
 	// app.post('/del_task', passport.antiMiddleware(), del_task);
 
 	/* LOGIN */
@@ -89,15 +89,18 @@ function dashboard(req, res, next) {
 		firstname: req.user.firstname,
 		lastname: req.user.lastname
 	}
+	var editStatus = {
+		status: req.query.edit
+	}
 
 	pool.query(sql_queries.query.get_own_tasks, [req.user.username], (err, data) => {
 		if(err) {
 			console.log("Error in retrieving tasks", err);
-			res.render('dashboard', { auth: true, userinfo: info, tasks: null });
+			res.render('dashboard', { auth: true, userinfo: info, tasks: null, editStatus: null});
 		} else {
 			var tasks = data.rows;
 			console.log(data.rows);
-			res.render('dashboard', { auth: true, userinfo: info, tasks: tasks });
+			res.render('dashboard', { auth: true, userinfo: info, tasks: tasks, editStatus: editStatus });
 		}
 	});
 }
@@ -146,6 +149,15 @@ function task(req, res, next) {
 			});
 			break;
 		case "edit":
+			pool.query(sql_queries.query.get_single_task, [action.task_num], (err, data) => {
+				if(err) {
+					console.log("Error in editing task", err);
+					res.redirect('back');
+				} else {
+					console.log(data.rows);
+					res.render('edit', { auth: true, userinfo: info, task: data.rows[0] });
+				}
+			});
 			break;
 	}
 }
@@ -200,6 +212,24 @@ function reg_user(req, res, next) {
 					});
 				}
 			});
+		}
+	});
+}
+
+function edit_task(req, res, next) {
+	var title = req.body.title;
+	var startdate = req.body.startdate;
+	var duration = req.body.duration;
+	var payamt = req.body.payamt;
+	var taskid = req.body.taskid;
+
+	pool.query(sql_queries.query.edit_task, [title, startdate, duration, payamt, ], (err, data1) => {
+		if (err) {
+			console.error("Error in editing task", err);
+			res.redirect('/dashboard?edit=fail');
+		} else {
+			console.log('Task edited');
+			res.redirect('/dashboard?edit=success');
 		}
 	});
 }

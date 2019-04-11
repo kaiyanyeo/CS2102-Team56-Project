@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS Schedules CASCADE;
 DROP TABLE IF EXISTS History CASCADE;
 DROP TABLE IF EXISTS Biddings CASCADE;
 DROP TABLE IF EXISTS Assigns CASCADE;
-DROP TABLE IF EXISTS Posts CASCADE;
 DROP TABLE IF EXISTS Tasks CASCADE;
 DROP TABLE IF EXISTS Admins CASCADE;
 DROP TABLE IF EXISTS Employers CASCADE;
@@ -63,7 +62,7 @@ CREATE TABLE Tasks (
 	taskID			SERIAL,
 	title			VARCHAR(64),
     employerName    VARCHAR(32) NOT NULL,
-	startDate		DATE NOT NULL,
+	startDate		TIMESTAMP NOT NULL,
 	duration		INTEGER NOT NULL,	-- in hours
 	payAmt          NUMERIC NOT NULL CHECK(payAmt>=0),	-- in dollars
 	categoryName	VARCHAR(64),
@@ -100,7 +99,7 @@ CREATE TABLE History (
     rating          INTEGER,
     comments        TEXT,
 	PRIMARY KEY (assignID),
-	FOREIGN KEY (employeeName) REFERENCES Employees(userName)
+	FOREIGN KEY (employeeName) REFERENCES Employees(userName),
 	FOREIGN KEY (employerName) REFERENCES Employers(userName),
 	FOREIGN KEY (assignID) REFERENCES Assigns(assignID)
 );
