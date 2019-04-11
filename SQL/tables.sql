@@ -1,129 +1,131 @@
-CREATE SCHEMA Users;
+-- Clear all possible duplicate tables
+DROP TABLE IF EXISTS Schedules CASCADE;
+DROP TABLE IF EXISTS History CASCADE;
+DROP TABLE IF EXISTS Biddings CASCADE;
+DROP TABLE IF EXISTS Assigns CASCADE;
+DROP TABLE IF EXISTS Posts CASCADE;
+DROP TABLE IF EXISTS Tasks CASCADE;
+DROP TABLE IF EXISTS Admins CASCADE;
+DROP TABLE IF EXISTS Employers CASCADE;
+DROP TABLE IF EXISTS Employees CASCADE;
+DROP TABLE IF EXISTS Users CASCADE;
+DROP TABLE IF EXISTS Accounts CASCADE;
+DROP TABLE IF EXISTS Categories CASCADE;
 
-CREATE TABLE Users.account(
-	userName        VARCHAR(100),
-	passwordHash    VARCHAR(64) NOT NULL,
-	FOREIGN KEY (userName) REFERENCES Users.user (userName)
+-- Create tables
+-- Accounts are owned by Users
+CREATE TABLE Accounts (
+	userName	VARCHAR(64),
+	pword		VARCHAR(64) NOT NULL,
+	PRIMARY KEY (userName)
 );
 
-CREATE TABLE Users.user(
-	userName            VARCHAR(100) PRIMARY KEY,
-	name                VARCHAR(100),
-	gender              CHAR(1),
-	birthDate           DATE,
-    phoneNumber         VARCHAR(15)
+-- Users are Admins, Employers, or Employees
+CREATE TABLE Users (
+	firstName	VARCHAR(32) NOT NULL,
+	lastName	VARCHAR(32) NOT NULL,
+	userName	VARCHAR(64),
+	gender		CHAR(1) NOT NULL,
+	birthdate	DATE NOT NULL,
+	PRIMARY KEY (userName),
+	FOREIGN KEY (userName) REFERENCES Accounts(userName)
 );
 
-CREATE TABLE Users.admin(
-	adminUserName       VARCHAR(100),
-	adminId             CHAR(10),
-	FOREIGN KEY (adminUserName) REFERENCES Users.user (userName)
+-- Admins can only be added manually
+CREATE TABLE Admins (
+    id           char(10),
+	userName	 VARCHAR(32),
+	PRIMARY KEY (userName),
+	FOREIGN KEY (userName) REFERENCES Users(userName)
 );
 
-CREATE TABLE Users.employer(
-	employerUserName    VARCHAR(100),
-    FOREIGN KEY (employerUserName) REFERENCES Users.user (userName)
+CREATE TABLE Employers (
+	userName	 	VARCHAR(32),
+	PRIMARY KEY (userName),
+	FOREIGN KEY (userName) REFERENCES Users(userName)
 );
 
-CREATE TABLE Users.employee(
-	employeeUserName    VARCHAR(100),
-	FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
+CREATE TABLE Employees (
+	userName	 		VARCHAR(32), 
+	numOfCompletedJobs	INTEGER DEFAULT 0,
+	PRIMARY KEY (userName),
+	FOREIGN KEY (userName) REFERENCES Users(userName)
 );
 
-
-
---------------------------------------------------------------
-
-CREATE SCHEMA AdminActions;
-
-CREATE TABLE AdminActions.manages(
-	adminUserName       VARCHAR(100),
-	taskId              CHAR(10),
-	FOREIGN KEY (adminUserName) REFERENCES Users.user (userName),
-	FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId)
+-- Categories that Tasks may belong to
+CREATE TABLE Categories (
+	name	    CHAR(20),
+	PRIMARY KEY (name)
 );
 
-
-------------------------------------------------------------------
-
-
-
-CREATE SCHEMA EmployerActionss;
-
-CREATE TABLE EmployerActions.posts(
-	employerUserName   VARCHAR(100),
-	taskId             CHAR(10),
-	FOREIGN KEY (employerUserName) REFERENCES Users.user (userName),
-	FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId)
+-- Tasks are general chores posted by Employers
+CREATE TABLE Tasks (
+	taskID			SERIAL,
+	title			VARCHAR(64),
+    employerName    VARCHAR(32) NOT NULL,
+	startDate		DATE NOT NULL,
+	duration		INTEGER NOT NULL,	-- in hours
+	payAmt          NUMERIC NOT NULL CHECK(payAmt>=0),	-- in dollars
+	categoryName	VARCHAR(64),
+	requirement		INTEGER,	-- given as option on front end
+	PRIMARY KEY (taskID),
+    FOREIGN KEY (employerName) REFERENCES Employers(userName),
+	FOREIGN KEY (categoryName) REFERENCES Categories(name)
 );
 
-CREATE TABLE EmployerActions.task(
-	taskId             CHAR(10) PRIMARY KEY,
-	categoryName       VARCHAR(100),
-	startTime          TIMESTAMP NOT NULL,
-	endTime            TIMESTAMP NOT NULL,
-	taskName           VARCHAR(100) NOT NULL,
-	type               VARCHAR(30),
-	pay                NUMERIC NOT NULL,
-	requirement        TEXT
+-- Assignment of Tasks to Employee
+CREATE TABLE Assigns (
+	assignID		SERIAL,
+	taskID			INTEGER,
+	employeeID		VARCHAR(32),
+	PRIMARY KEY (assignID),
+	FOREIGN KEY (taskID) REFERENCES Tasks(taskID),
+	FOREIGN KEY (employeeID) REFERENCES Employees(userName)
 );
 
-
-------------------------------------------------------------
-
-
-CREATE SCHEMA EmployeeActions;
-
-CREATE TABLE EmployeeActions.bidding(
-	employeeUserName  VARCHAR(100),
-	taskId            CHAR(10),
-	timePlaced        TIMESTAMP,
-	FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId),
-	FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
+-- Schedule of a particular Employee's Tasks
+CREATE TABLE Schedules (
+	employeeID	 	VARCHAR(32), 
+	assignID		INTEGER,
+	PRIMARY KEY (employeeID, assignID),
+	FOREIGN KEY (employeeID) REFERENCES Employees(userName),
+	FOREIGN KEY (assignID) REFERENCES Assigns(assignID)
 );
 
-
-CREATE TABLE EmployeeActions.schedule(
-	employeeUserName  VARCHAR(100),
-	startTime         TIMESTAMP NOT NULL,
-	endTime           TIMESTAMP NOT NULL,
-	FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
+-- History of completed Tasks
+CREATE TABLE History (
+	employeeName	VARCHAR(32),
+	employerName	VARCHAR(32),
+	assignID		INTEGER,
+    rating          INTEGER,
+    comments        TEXT,
+	PRIMARY KEY (assignID),
+	FOREIGN KEY (employeeName) REFERENCES Employees(userName)
+	FOREIGN KEY (employerName) REFERENCES Employers(userName),
+	FOREIGN KEY (assignID) REFERENCES Assigns(assignID)
 );
 
-
-CREATE TABLE EmployeeActions.history(
-	employeeUserName  VARCHAR(100),
-	rating            INTEGER NOT NULL,
-	comments          TEXT NOT NULL,
-	FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
+-- Biddings placed by an Employee for a Task
+CREATE TABLE Biddings (
+	employeeID		VARCHAR(32),
+	taskID			INTEGER,
+	timePlaced		TIMESTAMP,
+	PRIMARY KEY (employeeID, taskID),
+	FOREIGN KEY (employeeID) REFERENCES Employees(userName),
+	FOREIGN KEY (taskID) REFERENCES Tasks(taskID) ON DELETE CASCADE
 );
 
+-- Prevent creation of duplicate accounts
+CREATE OR REPLACE FUNCTION create_account() RETURNS trigger AS $ret$
+	BEGIN
+		IF EXISTS(SELECT 1 FROM Accounts a WHERE a.userName = NEW.userName) THEN
+			RAISE EXCEPTION 'Username % exists', NEW.userName;
+		END IF;
+		RETURN NEW;
+	END;
+$ret$ LANGUAGE plpgsql;
 
------------------------------------------------------------
-
-
-CREATE schema TaskActions;
-
-CREATE TABLE TaskActions.category(
-	categoryName      VARCHAR(100) PRIMARY KEY,
-	description       TEXT
-);
-
-
-CREATE TABLE TaskActions.belongs(
-	taskId            CHAR(10),
-	categoryName      VARCHAR(100),
-    FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId),
-    FOREIGN KEY (categoryname) REFERENCES TaskActions.category (categoryName)
-);
-
-CREATE TABLE TaskActions.assigns(
-   employerUserName   VARCHAR(100),
-   employeeUserName   VARCHAR(100),
-   taskId             CHAR(10),
-   FOREIGN KEY (taskId) REFERENCES EmployerActions.task (taskId),
-   FOREIGN KEY (employerUserName) REFERENCES Users.user (userName),
-   FOREIGN KEY (employeeUserName) REFERENCES Users.user (userName)
-);
-
-----------------------------------------------------------
+CREATE TRIGGER prevent_duplicate_accounts
+	BEFORE INSERT ON Accounts
+	FOR EACH ROW
+	EXECUTE PROCEDURE create_account();
