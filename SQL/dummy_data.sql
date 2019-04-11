@@ -74,7 +74,6 @@ INSERT INTO TASKS(title, employername, startdate, duration, payamt, categoryname
 ('Recover files from broken hard disk', 'mark@yahoo.com', '2019-05-16 12:03:16', 3, 25, 'Tech Support', 1),
 ('Finish my thesis for me', 'bobby@hotmail.com', '2019-06-19 10:18:38', 8, 50, 'Proofreading', 1);
 
-
 -- INSERT INTO Tasks (taskID, title, employerName, startDate, startTime, endTime, duration, payAmt, categoryName, requirement) VALUES
 -- (1, 'Help me move house', 'user1', '2019-04-11', '08:00:00', '16:00:00', 8, 10, 'Manual Labour', 0),
 -- (2, 'Mow Lawn', 'user2','2019-05-16', '08:00:00', '9:00:00', 1, 8, 'Manual Labour', 0),
@@ -90,17 +89,17 @@ INSERT INTO Biddings (employeeID, taskId, timePlaced) VALUES
 ('mary@gmail.com', 6, '2019-01-02 15:53:35'),
 ('mark@yahoo.com', 6, '2019-01-03 15:53:35'),
 ('bobby@hotmail.com', 6, '2019-01-03 15:58:35'),
-('test@hello.com', 6, '2019-01-04 09:28:35');
+('test@hello.com', 5, '2019-01-04 09:28:35');
 
 INSERT INTO Assigns (taskID, employeeID) VALUES
-(1, 'test@hello.com'),	-- completed
+(1, 'bobby@hotmail.com'),	-- completed
 (3, 'mary@gmail.com'),	-- not completed
 (10, 'mark@yahoo.com');
 
-INSERT INTO Schedules (employeeID, assignid) VALUES
+
+INSERT INTO Schedules (employeeID, assignID) VALUES
 ('test@hello.com', 1),
 ('mary@gmail.com', 2);
 
 INSERT INTO History (employeeName, employerName, assignid, rating, comments) VALUES
-('test@hello.com', 'dfsad@example.com', '1', 5, 'Good at carrying boxes. Finished very quickly');
-
+('bobby@hotmail.com', 'dfsad@example.com', '1', 5, 'Good at carrying boxes. Finished very quickly');
