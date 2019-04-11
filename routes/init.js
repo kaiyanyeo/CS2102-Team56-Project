@@ -20,9 +20,12 @@ function initRouter(app) {
 	app.get('/register', passport.antiMiddleware(), register);
 	app.get('/dashboard', passport.authMiddleware(), dashboard);
 	app.get('/browse' , passport.authMiddleware(), browse );
+	app.get('/task' , passport.authMiddleware(), task );
 
 	/* PROTECTED POST */
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
+	// app.post('/edit_task', passport.antiMiddleware(), edit_task);
+	// app.post('/del_task', passport.antiMiddleware(), del_task);
 
 	/* LOGIN */
 	app.post('/login', passport.authenticate('local', {
@@ -116,6 +119,35 @@ function browse(req, res, next) {
 			res.render('browse', { auth: true, userinfo: info, tasks: tasks });
 		}
 	});
+}
+
+function task(req, res, next) {
+	var info = {
+		user: req.user.username,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname
+	}
+
+	var action = {
+		function: req.query.function,
+		task_num: req.query.num
+	}
+
+	switch(action.function) {
+		case "delete":
+			pool.query(sql_queries.query.delete_task, [action.task_num], (err, data) => {
+				if(err) {
+					console.log("Error in getting other tasks", err);
+					res.redirect('back');
+				} else {
+					console.log(data.rows);
+					res.redirect('/dashboard');
+				}
+			});
+			break;
+		case "edit":
+			break;
+	}
 }
 
 // // POST

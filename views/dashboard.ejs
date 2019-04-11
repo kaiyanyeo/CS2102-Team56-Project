@@ -32,7 +32,8 @@
 		<% if(tasks) { %>
 		<div class="container">
 			<div class="row">
-				<img src="images/find-employee.png" class="img-thumbnail mx-auto d-block" style="width:10%; height:10%; border:0;">
+				<img src="images/find-employee.png" class="img-thumbnail mx-auto d-block"
+					style="width:10%; height:10%; border:0;">
 			</div>
 			<h5 class="font-weight-bold text-center">Tasks you have posted!</h5>
 			<br />
@@ -41,15 +42,26 @@
 				<div class="accordion" id="accordionExample">
 					<div class="card">
 						<div class="card-header" id="heading<%= task.taskid %>">
-							<h2 class="mb-0">
-								<button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-									data-target="#collapse<%= task.taskid %>" aria-expanded="false" aria-controls="collapse<%= task.taskid %>">
-									<%= task.title %>
-								</button>
-							</h2>
+							<div class="row">
+								<h2 class="mb-0 col-8">
+									<button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+										data-target="#collapse<%= task.taskid %>" aria-expanded="false"
+										aria-controls="collapse<%= task.taskid %>">
+										<%= task.title %>
+									</button>
+								</h2>
+								<div class="col-4 btn-group" role="group" aria-label="Task Buttons">
+									<a class="btn btn-primary col-6" href="/task?function=edit&num=<%= task.taskid %>" role="button">
+										Edit
+									</a>
+									<a class="btn btn-danger col-6" href="/task?function=delete&num=<%= task.taskid %>" role="button">
+										Delete
+									</a>
+								</div>
+							</div>
 						</div>
-						<div id="collapse<%= task.taskid %>" class="collapse" aria-labelledby="heading<%= task.taskid %>"
-							data-parent="#accordionExample">
+						<div id="collapse<%= task.taskid %>" class="collapse"
+							aria-labelledby="heading<%= task.taskid %>" data-parent="#accordionExample">
 							<div class="card-body">
 								you probably haven't heard of them accusamus labore sustainable VHS.
 							</div>
