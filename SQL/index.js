@@ -2,7 +2,7 @@ const sql = {}
 
 sql.query = {
     // Login
-    auth_user: 'SELECT * FROM Accounts WHERE username=$1',
+    auth_user: 'SELECT A.username, pword, firstname, lastname FROM Accounts A INNER JOIN Users U ON A.username = U.username WHERE A.username=$1',
 
     // register
     create_account: 'INSERT INTO Accounts (username, pword) VALUES ($1,$2)',

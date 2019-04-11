@@ -62,11 +62,17 @@ function initRouter(app) {
 
 // GET
 function index(req, res, next) {
-	console.log(req.user);
 	if (!req.isAuthenticated()) {
-		res.render('index', { page: '', auth: false });
+		res.render('index', { auth: false, userInfo: null });
 	} else {
-		basic(req, res, 'index', { page: '', auth: true });
+		console.log('index func:');
+		console.log(req.user);
+		var info = {
+			user: req.user.username,
+			firstname: req.user.firstname,
+			lastname: req.user.lastname
+		};
+		res.render('index', { auth: true, userinfo: info });
 	}
 }
 
@@ -75,13 +81,14 @@ function register(req, res, next) {
 	res.render('register', { page: 'register', auth: false, regFail: regResult });
 }
 
+// user should already be authenticated due to use of authMiddleware
 function dashboard(req, res, next) {
 	var info = {
-		user: req.query.username,
-		firstname: req.query.firstname,
-		lastname: req.query.lastname
+		user: req.user.username,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname
 	}
-	res.render('dashboard', { userinfo: info });
+	res.render('dashboard', { auth: true, userinfo: info });
 }
 
 // // POST

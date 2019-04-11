@@ -25,7 +25,7 @@ function findUser(username, callback) {
     pool.query(sql_queries.query.auth_user, [username], (err, data) => {
         if (err) {
             console.error("Cannot find user");
-            console.log("Cannot find user");
+            console.log("Cannot find user", err);
             return callback(null);
         }
 
@@ -34,13 +34,12 @@ function findUser(username, callback) {
             console.log("Account does not exist?");
             return callback(null);
         } else if (data.rows.length == 1) {
-            console.log("user exists");
             // user object attaches to the original request as req.user
             return callback(null, {
-                userName: data.rows[0].userName,
+                userName: data.rows[0].username,
                 passwordHash: data.rows[0].pword,
-                firstname: data.rows[0].firstName,
-                lastname: data.rows[0].lastName
+                firstname: data.rows[0].firstname,
+                lastname: data.rows[0].lastname
             });
         } else {
             console.error("More than one user?");
@@ -52,8 +51,8 @@ function findUser(username, callback) {
 
 passport.serializeUser(function (user, done) {
     // saved to session
-    // req.session.passport.user = {usernam:...}
-    done(null, user.username);
+    // req.session.passport.user = {username:...}
+    done(null, user.userName);
 })
 
 passport.deserializeUser(function (username, done) {
@@ -65,24 +64,20 @@ function initPassport() {
         (username, password, done) => {
             findUser(username, (err, user) => {
                 if (err) {
-                    console.log('initpassport error', err);
                     return done(err);
                 }
 
                 // User not found
                 if (!user) {
-                    console.error('User not found');
                     return done(null, false);
                 }
 
                 // Always use hashed passwords and fixed time comparison
                 bcrypt.compare(password, user.passwordHash, (err, isValid) => {
                     if (err) {
-                        console.log('bcrypt error', err);
                         return done(err);
                     }
                     if (!isValid) {
-                        console.log('bcrypt is not valid');
                         return done(null, false);
                     }
                     console.log('bcrypt valid');
