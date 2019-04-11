@@ -63,7 +63,7 @@ CREATE TABLE Tasks (
 	taskID			SERIAL,
 	title			VARCHAR(64),
     employerName    VARCHAR(32) NOT NULL,
-	startDate		DATE NOT NULL,
+	startDate		TIMESTAMP NOT NULL,
 	duration		INTEGER NOT NULL,	-- in hours
 	payAmt          NUMERIC NOT NULL CHECK(payAmt>=0),	-- in dollars
 	categoryName	VARCHAR(64),
@@ -100,7 +100,7 @@ CREATE TABLE History (
     rating          INTEGER,
     comments        TEXT,
 	PRIMARY KEY (assignID),
-	FOREIGN KEY (employeeName) REFERENCES Employees(userName)
+	FOREIGN KEY (employeeName) REFERENCES Employees(userName),
 	FOREIGN KEY (employerName) REFERENCES Employers(userName),
 	FOREIGN KEY (assignID) REFERENCES Assigns(assignID)
 );
@@ -129,3 +129,70 @@ CREATE TRIGGER prevent_duplicate_accounts
 	BEFORE INSERT ON Accounts
 	FOR EACH ROW
 	EXECUTE PROCEDURE create_account();
+	
+-- Prevent update if there is existing assignments for the target update taskID
+CREATE OR REPLACE FUNCTION check_existing_assignments() RETURNS trigger AS $ret$
+	BEGIN
+		IF EXISTS(SELECT 1 FROM Assigns a WHERE a.taskID = NEW.taskID) THEN
+			RAISE EXCEPTION 'Assignment % exists', NEW.taskID;
+		END IF;
+		RETURN NEW;
+	END;
+$ret$ LANGUAGE plpgsql;	
+	
+CREATE TRIGGER check_assigns_from_tasks
+	BEFORE UPDATE ON Tasks
+	FOR EACH ROW
+	EXECUTE PROCEDURE check_existing_assignments();
+
+-- Prevent insert if there is clash in schedule/existing bids
+CREATE OR REPLACE FUNCTION check_clash() RETURNS trigger AS $ret$
+	DECLARE
+		mycursor CURSOR FOR SELECT assignID FROM Schedules s WHERE s.employeeID = NEW.employeeID;
+		mycursor2 CURSOR FOR SELECT taskID FROM Biddings b WHERE b.employeeID = NEW.employeeID;
+		scheduleStart TIMESTAMP; scheduleEnd TIMESTAMP; taskStart TIMESTAMP; taskEnd TIMESTAMP; taskDuration INTEGER; id INTEGER; aID INTEGER; eID varchar(64);
+	BEGIN
+		OPEN mycursor;
+		SELECT startDate FROM Tasks t WHERE t.taskID = NEW.taskID INTO taskStart;
+		SELECT duration FROM Tasks t WHERE t.taskID = NEW.taskID INTO taskDuration;
+		taskEnd := taskStart + (taskDuration * INTERVAL '1 hours');
+		LOOP
+			FETCH mycursor INTO aID;
+			EXIT WHEN NOT FOUND;
+			SELECT startDate FROM Tasks t WHERE t.taskID = (SELECT taskID FROM Assigns a WHERE a.assignID = aID) INTO scheduleStart;
+			SELECT scheduleStart + (duration * INTERVAL '1 hours') FROM Tasks t WHERE t.taskID = (SELECT taskID FROM Assigns a WHERE a.assignID = aID) INTO scheduleEnd;
+			IF (taskStart < scheduleStart AND taskEnd > scheduleStart) OR
+				(taskStart = scheduleStart AND taskEnd = scheduleEnd) OR
+				(taskStart > scheduleStart AND taskStart < scheduleEnd) OR
+				(scheduleStart >= taskStart AND scheduleEnd < taskEnd) THEN
+				RAISE EXCEPTION 'Schedule clash';
+			END IF;
+		END LOOP;
+		CLOSE mycursor;
+		OPEN mycursor2;
+		LOOP
+			FETCH mycursor2 INTO id;
+			EXIT WHEN NOT FOUND;
+			SELECT startDate FROM Tasks t WHERE t.taskID = id INTO scheduleStart;
+			SELECT duration FROM Tasks t WHERE t.taskID = id INTO taskDuration;
+			scheduleEnd := scheduleStart + (taskDuration * INTERVAL '1 hours');
+			IF (taskStart < scheduleStart AND taskEnd > scheduleStart) OR
+				(taskStart = scheduleStart AND taskEnd = scheduleEnd) OR
+				(taskStart > scheduleStart AND taskStart < scheduleEnd) OR
+				(scheduleStart >= taskStart AND scheduleEnd < taskEnd) THEN
+				RAISE EXCEPTION 'Biddings clash';
+			END IF;
+		END LOOP;
+		CLOSE mycursor2;
+		SELECT employerName FROM TASKS t WHERE t.taskID = NEW.taskID INTO eID;
+		IF eID = NEW.employeeID THEN
+			RAISE EXCEPTION 'Cannot bid for own task';
+		END IF;
+		RETURN NEW;
+	END;
+$ret$ LANGUAGE plpgsql;	
+	
+CREATE TRIGGER check_schedule_biddings_from_biddings
+	BEFORE INSERT ON Biddings
+	FOR EACH ROW
+	EXECUTE PROCEDURE check_clash();
