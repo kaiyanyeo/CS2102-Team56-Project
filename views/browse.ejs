@@ -43,27 +43,31 @@
 			</form>
 			<br />
 			<div id="accordion">
-				<% tasks.forEach(function(task) { %>
-				<div class="accordion" id="accordionExample">
-					<div class="card">
-						<div class="card-header" id="heading<%= task.taskid %>">
-							<h2 class="mb-0">
-								<button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-									data-target="#collapse<%= task.taskid %>" aria-expanded="false"
-									aria-controls="collapse<%= task.taskid %>">
-									<%= task.title %>
-								</button>
-							</h2>
-						</div>
-						<div id="collapse<%= task.taskid %>" class="collapse"
-							aria-labelledby="heading<%= task.taskid %>" data-parent="#accordionExample">
-							<div class="card-body">
-								you probably haven't heard of them accusamus labore sustainable VHS.
+				<% if(tasks.length==0) { %>
+					<%- include partials/notaskfound %>
+				<% } else { %>
+					<% tasks.forEach(function(task) { %>
+					<div class="accordion" id="accordionExample">
+						<div class="card">
+							<div class="card-header" id="heading<%= task.taskid %>">
+								<h2 class="mb-0">
+									<button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+										data-target="#collapse<%= task.taskid %>" aria-expanded="false"
+										aria-controls="collapse<%= task.taskid %>">
+										<%= task.title %>
+									</button>
+								</h2>
+							</div>
+							<div id="collapse<%= task.taskid %>" class="collapse"
+								aria-labelledby="heading<%= task.taskid %>" data-parent="#accordionExample">
+								<div class="card-body">
+									you probably haven't heard of them accusamus labore sustainable VHS.
+								</div>
 							</div>
 						</div>
+						<% }); %>
 					</div>
-					<% }); %>
-				</div>
+				<% } %>
 			</div>
 			<% } else { %>
 			<%- include partials/notask %>
