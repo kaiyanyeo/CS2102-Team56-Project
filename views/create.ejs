@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../../favicon.ico">
+
+  <!-- Bootstrap CSS for Styling -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <!-- Date time picker -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+
+  <!-- Fontawesome Icons -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+  <!-- Page Title -->
+  <title>CS2102 Starter Guide</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+
+  <header>
+    <%- include partials/header %>
+  </header>
+  <main>
+    <div class="container">
+      <div class="row">
+        <img src="images/tasks.png" class="img-thumbnail mx-auto d-block" style="width:10%; height:10%; border:0;">
+      </div>
+      <h5 class="font-weight-bold text-center">Create New Task</h5>
+      <br />
+      <div class="card text-center">
+        <div class="card-body">
+          <form class="form-register" method="post" action="create_task">
+            <div class="form-group mb-3">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <div class="form-group">
+                        <h6 class="mt-0">Title: </h6>
+                    </div>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <input type="text" id="title" class="form-control" required autofocus name="title">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <h6>Select expected date for task: </h6>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"
+                          required autofocus name="startdate" />
+                        <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <h6>Select expected duration of task: </h6>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <select class="form-control" name="duration" required autofocus>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <h6>Offer an amount for compensation:</h6>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <input type="text" id="payment" class="form-control" required autofocus name="payamt">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <h6>Select the most appropriate category for your task:</h6>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <select type="form-control" name="category" required autofocus>
+                        <% categories.forEach(function(category) { %>
+                          <option value="<%= category.name %>"><%= category.name %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center form-sm mt-2">
+              <button type="submit" class="btn btn-info">Post new Task</button>
+            </div>
+          </form>
+        </div>
+      </div>
+  </main>
+
+  <footer>
+    <%- include partials/footer %>
+  </footer>
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+  <!-- Date time picker -->>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+
+  <script type="text/javascript">
+    $(function () {
+      $('#datetimepicker1').datetimepicker();
+    });
+  </script>
+</body>
+
+</html>

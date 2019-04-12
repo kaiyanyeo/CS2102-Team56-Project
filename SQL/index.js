@@ -18,6 +18,9 @@ sql.query = {
     delete_task: 'DELETE FROM Tasks WHERE taskid = $1',
     get_single_task: 'SELECT * FROM Tasks WHERE taskid = $1',
     edit_task: 'UPDATE Tasks SET title=$1, startdate=$2, duration=$3, payamt=$4 where taskid=$5',
+    get_categories: 'SELECT * FROM Categories',
+    create_task: 'INSERT INTO TASKS(title, employername, startdate, duration, payamt, categoryname, requirement) VALUES \
+    ($1, $2, $3, $4, $5, $6, $7)',
 
     // Get Number of postings by each employer
     get_postings: 'SELECT count(*) from Employers e1 LEFT JOIN employerAction.posts p1 ON e1.employerUserName = p1.employerUserName GROUP BY e1.employerUserName',

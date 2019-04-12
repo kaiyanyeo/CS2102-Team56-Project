@@ -19,13 +19,14 @@ function initRouter(app) {
 	/* PROTECTED GET */
 	app.get('/register', passport.antiMiddleware(), register);
 	app.get('/dashboard', passport.authMiddleware(), dashboard);
-	app.get('/browse' , passport.authMiddleware(), browse );
-	app.get('/task' , passport.authMiddleware(), task );
+	app.get('/browse', passport.authMiddleware(), browse);
+	app.get('/task', passport.authMiddleware(), task);
+	app.get('/create', passport.authMiddleware(), create);
 
 	/* PROTECTED POST */
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
 	app.post('/edit_task', passport.authMiddleware(), edit_task);
-	// app.post('/del_task', passport.antiMiddleware(), del_task);
+	app.post('/create_task', passport.authMiddleware(), create_task);
 
 	/* LOGIN */
 	app.post('/login', passport.authenticate('local', {
@@ -94,9 +95,9 @@ function dashboard(req, res, next) {
 	}
 
 	pool.query(sql_queries.query.get_own_tasks, [req.user.username], (err, data) => {
-		if(err) {
+		if (err) {
 			console.log("Error in retrieving tasks", err);
-			res.render('dashboard', { auth: true, userinfo: info, tasks: null, editStatus: null});
+			res.render('dashboard', { auth: true, userinfo: info, tasks: null, editStatus: null });
 		} else {
 			var tasks = data.rows;
 			console.log(data.rows);
@@ -113,7 +114,7 @@ function browse(req, res, next) {
 	}
 
 	pool.query(sql_queries.query.get_other_tasks, [req.user.username], (err, data) => {
-		if(err) {
+		if (err) {
 			console.log("Error in getting other tasks", err);
 			res.render('browse', { auth: true, userinfo: info, tasks: null });
 		} else {
@@ -136,10 +137,10 @@ function task(req, res, next) {
 		task_num: req.query.num
 	}
 
-	switch(action.function) {
+	switch (action.function) {
 		case "delete":
 			pool.query(sql_queries.query.delete_task, [action.task_num], (err, data) => {
-				if(err) {
+				if (err) {
 					console.log("Error in getting other tasks", err);
 					res.redirect('back');
 				} else {
@@ -150,7 +151,7 @@ function task(req, res, next) {
 			break;
 		case "edit":
 			pool.query(sql_queries.query.get_single_task, [action.task_num], (err, data) => {
-				if(err) {
+				if (err) {
 					console.log("Error in editing task", err);
 					res.redirect('back');
 				} else {
@@ -159,7 +160,27 @@ function task(req, res, next) {
 				}
 			});
 			break;
+		default:
+		// no action
 	}
+}
+
+function create(req, res, next) {
+	var info = {
+		user: req.user.username,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname
+	}
+
+	pool.query(sql_queries.query.get_categories, (err, data) => {
+		if (err) {
+			console.log("Error in create task page", err);
+			res.render('create', { auth: true, userinfo: info, categories: null });
+		} else {
+			// console.log(data.rows);
+			res.render('create', { auth: true, userinfo: info, categories: data.rows });
+		}
+	});
 }
 
 // // POST
@@ -234,6 +255,23 @@ function edit_task(req, res, next) {
 	});
 }
 
+function create_task(req, res, next) {
+	var title = req.body.title;
+	var startdate = req.body.startdate;
+	var duration = req.body.duration;
+	var payamt = req.body.payamt;
+	var catname = req.body.category;
+
+	pool.query(sql_queries.query.create_task, [title, req.user.username, startdate, duration, payamt, catname, 1], (err, data1) => {
+		if (err) {
+			console.error("Error in creating task", err);
+			res.redirect('/dashboard?create=fail');
+		} else {
+			console.log('Task created');
+			res.redirect('/dashboard?create=success');
+		}
+	});
+}
 
 // // LOGOUT
 function logout(req, res, next) {
