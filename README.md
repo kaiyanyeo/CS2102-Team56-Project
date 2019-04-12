@@ -39,6 +39,9 @@ Note: Remember to set your .env file with the appropriate parameters.
 
 Visit localhost:3000 to access the application. Enjoy!
 
+Run the `SQL/tables.sql` script in your PostgreSQL database to create the tables needed for the application.
+Run the `SQL/dummy_data.sql` script in your PostgreSQL database to populate the tables with some dummy data. Mostly for testing.
+
 ### Tech stack
 DBMS: PostgreSQL
 Backend: ExpressJS

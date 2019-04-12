@@ -43,8 +43,6 @@ sql.query = {
     place_bid: 'INSERT INTO Biddings (employeeid, taskid, timeplaced) VALUES ($1,$2,$3)',
     have_bidded: 'SELECT * FROM Biddings WHERE taskid=$1 AND employeeid=$2',
 
-    // Get user with the most task at hand right for each category
-    get_busiest_user: 'SELECT c1.employeeUserName, categoryName, count(*) FROM (appuser.employee e1 LEFT JOIN taskAction.assigns a1 ON e1.employeeUserName = a1.employeeUserName as c1) NATURAL JOIN taskAction.category c2 GROUP BY employeeUserName, categoryName'
 }
 
 module.exports = sql
