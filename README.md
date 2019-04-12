@@ -26,3 +26,21 @@ For the final project demo, your application’s database should be loaded with 
 
 ## ER Model
 Current model [here](CS2102 ER Diagram.png)
+
+## Developers' Guide
+
+### Deploy and run
+From within the project folder, run
+- npm start
+
+Note: Remember to set your .env file with the appropriate parameters.
+- DATABASE_URL according to your PostgreSQL set up
+- SECRET key
+
+Visit localhost:3000 to access the application. Enjoy!
+
+### Tech stack
+DBMS: PostgreSQL
+Backend: ExpressJS
+Frontend: HTML (in EJS views), CSS, Javascript, Bootstrap
+Others: PassportJS for authentication

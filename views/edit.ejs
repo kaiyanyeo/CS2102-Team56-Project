@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%- include partials/htmlhead %>
+</head>
+
+<body>
+
+  <header>
+    <%- include partials/header %>
+  </header>
+  <main>
+    <div class="container">
+      <div class="row">
+        <img src="images/edit.png" class="img-thumbnail mx-auto d-block" style="width:10%; height:10%; border:0;">
+      </div>
+      <h5 class="font-weight-bold text-center">Edit <%= task.categoryname %> Task</h5>
+      <br />
+      <div class="card text-center">
+        <div class="card-body">
+          <form class="form-register" method="post" action="edit_task">
+            <div class="form-group mb-3">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <div class="form-group">
+                        <h6 class="mt-0">Title: </h6>
+                        <div class="row text-center">
+                          <div class="col-sm-4"></div>
+                          (ID #<input type="text col-sm-1" class="form-control classname" value="<%= task.taskid %>" id="taskid" name="taskid" readonly />)
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <input type="text" id="title" class="form-control" value="<%= task.title %>" required autofocus
+                        name="title">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <h6>Select new date: </h6>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"
+                          value="<%= task.startdate %>" required autofocus name="startdate" />
+                        <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <h6>Change duration: </h6>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <select class="form-control" name="duration" required autofocus>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-5 my-auto">
+                    <h6>Change offered payment:</h6>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="form-group">
+                      <input type="text" id="payment" class="form-control" value="<%= task.payamt %>" required autofocus
+                        name="payamt">
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="text-center form-sm mt-2">
+              <button type="submit" class="btn btn-info">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+  </main>
+
+  <footer>
+    <%- include partials/footer %>
+  </footer>
+
+  <%- include partials/htmlscripts %>
+  
+  <script type="text/javascript">
+    $(function () {
+      $('#datetimepicker1').datetimepicker();
+    });
+  </script>
+</body>
+
+</html>

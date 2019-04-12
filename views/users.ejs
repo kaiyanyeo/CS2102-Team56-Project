@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<%- include partials/htmlhead %>
+</head>
+
+<body>
+
+	<header>
+		<%- include partials/header %>
+	</header>
+	<main>
+		<div class="container">
+			<div class="row">
+				<img src="images/users.png" class="img-thumbnail mx-auto d-block"
+					style="width:10%; height:10%; border:0;">
+			</div>
+			<!-- <div class="row justify-content-center">
+				<div class="col-sm-4 text-center">
+					<a class="btn btn-info" href="/users/employers">View Employers Only</a>
+				</div>
+				<div class="col-sm-4 text-center">
+					<a class="btn btn-info" href="/users/employees">View Employees Only</a>
+				</div>
+			</div> -->
+			<br />
+			<div class="row justify-content-center">
+				<div class="col-sm-8">
+					<% if(information) { %>
+					<table class="table table-striped" id="usersTable">
+						<thead>
+							<tr>
+								<th scope="col">Name</th>
+								<th scope="col">No. of Jobs Posted</th>
+								<th scope="col">No. of Jobs Completed</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% information.forEach(function(row) { %>
+							<tr>
+								<td scope="row"><%= row.firstname %>&nbsp;<%= row.lastname %></th>
+								<td><%= row.posted %></td>
+								<td><%= row.completed %></td>
+							</tr>
+							<% }); %>
+						</tbody>
+					</table>
+					<% } else { %>
+					<%- include partials/othersnotfound %>
+					<% } %>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer>
+		<%- include partials/footer %>
+	</footer>
+
+	<%- include partials/htmlscripts %>
+	<script>
+		$(document).ready(function () {
+			$('#usersTable').DataTable();
+		});
+	</script>
+
+</body>
+
+</html>
