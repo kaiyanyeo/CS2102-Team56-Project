@@ -23,11 +23,11 @@ sql.query = {
     ($1, $2, $3, $4, $5, $6, $7)',
     search_task: 'SELECT * FROM Tasks WHERE title ~* $1 AND employername <> $2',
 
-    // Get Number of postings by each employer
-    get_postings: 'SELECT count(*) from Employers e1 LEFT JOIN employerAction.posts p1 ON e1.employerUserName = p1.employerUserName GROUP BY e1.employerUserName',
-
+    // Complex queries
+    // Get Number of Tasks posted by each employer
+    get_num_tasks: 'SELECT e1.username, count(*) from Employers e1 LEFT JOIN Tasks t1 ON e1.employerusername = t1.employerusername GROUP BY e1.username',
     // Get Number of Jobs done by the Employee in the past
-    get_num_history: 'SELECT count(*) from appuser.employee e1 LEFT JOIN employeeAction.history h1 ON e1.employeeUserName = h1.employeeUserName GROUP BY e1.employeeUserName',
+    get_num_history: 'SELECT count(*) FROM Employee e1 LEFT JOIN History h1 ON e1.employeeusername = h1.employeeusername GROUP BY e1.employeeusername',
 
     // Get user with the most task at hand right for each category
     get_busiest_user: 'SELECT c1.employeeUserName, categoryName, count(*) FROM (appuser.employee e1 LEFT JOIN taskAction.assigns a1 ON e1.employeeUserName = a1.employeeUserName as c1) NATURAL JOIN taskAction.category c2 GROUP BY employeeUserName, categoryName'

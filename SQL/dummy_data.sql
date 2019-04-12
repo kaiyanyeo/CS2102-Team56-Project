@@ -74,12 +74,6 @@ INSERT INTO TASKS(title, employername, startdate, duration, payamt, categoryname
 ('Recover files from broken hard disk', 'mark@yahoo.com', '2019-05-16 12:03:16', 3, 25, 'Tech Support', 1),
 ('Finish my thesis for me', 'bobby@hotmail.com', '2019-06-19 10:18:38', 8, 50, 'Proofreading', 1);
 
--- INSERT INTO Tasks (taskID, title, employerName, startDate, startTime, endTime, duration, payAmt, categoryName, requirement) VALUES
--- (1, 'Help me move house', 'user1', '2019-04-11', '08:00:00', '16:00:00', 8, 10, 'Manual Labour', 0),
--- (2, 'Mow Lawn', 'user2','2019-05-16', '08:00:00', '9:00:00', 1, 8, 'Manual Labour', 0),
--- (3, 'Recover files from broken hard disk', 'user1', '2019-06-06', '13:00:00', '16:00:00', 3, 25, 'Tech Support', 1),
--- (4, 'Finish my thesis for me', 'user2', '2019-06-19', '08:00:00', '16:00:00', 8, 50, 'Proofreading', 1);
-
 INSERT INTO Biddings (employeeID, taskId, timePlaced) VALUES
 ('test@hello.com', 4, '2019-02-16 19:23:45'),
 ('test@hello.com', 2, '2019-03-10 11:40:45'),

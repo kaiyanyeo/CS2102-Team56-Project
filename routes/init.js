@@ -22,6 +22,7 @@ function initRouter(app) {
 	app.get('/browse', passport.authMiddleware(), browse);
 	app.get('/task', passport.authMiddleware(), task);
 	app.get('/create', passport.authMiddleware(), create);
+	app.get('/users', passport.authMiddleware(), users);
 
 	/* PROTECTED POST */
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
@@ -38,32 +39,6 @@ function initRouter(app) {
 	/* LOGOUT */
 	app.get('/logout', passport.authMiddleware(), logout);
 }
-
-
-// // Render Function
-// function basic(req, res, page, other) {
-// 	var info = {
-// 		page: page,
-// 		user: req.user.username,
-// 		firstname: req.user.firstname,
-// 		lastname : req.user.lastname,
-// 		status   : req.user.status,
-// 	};
-// 	if(other) {
-// 		for(var fld in other) {
-// 			info[fld] = other[fld];
-// 		}
-// 	}
-// 	res.render(page, info);
-// }
-
-// function query(req, fld) {
-// 	return req.query[fld] ? req.query[fld] : '';
-// }
-// function msg(req, fld, pass, fail) {
-// 	var info = query(req, fld);
-// 	return info ? (info=='pass' ? pass : fail) : '';
-// }
 
 // GET
 function index(req, res, next) {
@@ -180,6 +155,24 @@ function create(req, res, next) {
 		} else {
 			// console.log(data.rows);
 			res.render('create', { auth: true, userinfo: info, categories: data.rows });
+		}
+	});
+}
+
+function users(req, res, next) {
+	var info = {
+		user: req.user.username,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname
+	}
+
+	pool.query(sql_queries.query.get_categories, (err, data) => {
+		if (err) {
+			console.log("Error in getting users", err);
+			res.render('users', { auth: true, userinfo: info, categories: null });
+		} else {
+			// console.log(data.rows);
+			res.render('users', { auth: true, userinfo: info, categories: data.rows });
 		}
 	});
 }
