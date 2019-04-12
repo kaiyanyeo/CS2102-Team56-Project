@@ -1,0 +1,99 @@
+<!-- views/partials/header.ejs -->
+<!-- Sticky Navbar -->
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/"><i class="fas fa-search-dollar"></i>&nbsp;Task Sourcing</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <% if(auth) { %>
+                    <a class="nav-link" href="/dashboard">Dashboard <span class="sr-only">(current)</span></a>
+                <% } else { %>
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                <% } %>
+            </li>
+            <% if(auth) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/browse">Browse Others' Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/create">Post New Task!</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users">Other Employers/Employees</a>
+                </li>
+            <% } %>
+        </ul>
+        <div class="align-items-center">
+            <% if(auth) { %>
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle bg-dark rounded-pill text-light" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw"></i>&nbsp;
+                        <%= userinfo.firstname %>&nbsp;<%= userinfo.lastname %>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </li>
+            </ul>
+            <% } else { %>
+            <button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modalLRForm">Log In</button>
+            <% } %>
+        </div>
+    </div>
+</nav>
+
+
+<!--Modal: Login / Register Form-->
+<div class="modal fade" id="modalLRForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog cascading-modal" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!-- Tab panels -->
+            <div class="tab-content">
+                <!-- Login Panel-->
+                <div class="tab-pane fade in show active" id="panel7" role="tabpanel">
+                    <!-- Login Panel Body-->
+                    <form method="post" action="login">
+                        <div class="modal-body mb-4">
+                            <h1 class="h3 mb-3 font-weight-normal text-center"><i class="fas fa-user mr-1"></i>Login
+                            </h1>
+                            <div class="form-group mb-3">
+                                <input type="email" id="modalLRInput10" class="form-control validate"
+                                    placeholder="Email address" name="username" required autofocus>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <input type="password" id="modalLRInput11" class="form-control validate"
+                                    placeholder="Password" name="password" required autofocus>
+                            </div>
+                            <div class="text-center mt-2">
+                                <button type="submit" class="btn btn-info">Log in</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Login Panel Footer-->
+                    <div class="modal-footer">
+                        <div class="options text-center text-md-right mt-1">
+                            <p>Not a member? <a href="register" class="blue-text">Sign Up</a></p>
+                            <p>Forgot <a href="#" class="blue-text">Password?</a></p>
+                        </div>
+                        <button type="button" class="btn btn-outline-info waves-effect ml-auto"
+                            data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!--/Login Panel-->
+
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<!--Modal: Login / Register Form-->

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<%- include partials/htmlhead %>
+</head>
+
+<body>
+
+	<header>
+		<%- include partials/header %>
+	</header>
+	<main>
+		<% if(editStatus.status==="fail") { %>
+		<div class="container">
+			<h6 class="font-weight-light text-danger text-center">
+				Edit task failed. Please try something else.
+			</h6>
+		</div>
+		<% } %>
+		<% if(tasks) { %>
+		<div class="container">
+			<div class="row">
+				<img src="images/find-employee.png" class="img-thumbnail mx-auto d-block"
+					style="width:10%; height:10%; border:0;">
+			</div>
+			<h5 class="font-weight-bold text-center">Tasks you have posted!</h5>
+			<br />
+			<div class="row justify-content-center">
+			<div id="container" style="width: 70%;">
+				<ul class="list-group">
+					<% tasks.forEach(function(task) { %>
+					<li class="list-group-item">
+						<div class="row">
+							<div class="col-8 my-auto">
+								<h6><%= task.title %></h6>
+								<small><%= task.startdate %>, offering $<%= task.payamt %> for <%= task.duration %>hr</small>
+							</div>
+							<div class="col-4 btn-group" role="group" aria-label="Task Buttons">
+								<a class="btn btn-primary col-6" href="/task?function=edit&num=<%= task.taskid %>"
+									role="button">
+									Edit
+								</a>
+								<a class="btn btn-danger col-6" href="/task?function=delete&num=<%= task.taskid %>"
+									role="button">
+									Delete
+								</a>
+							</div>
+						</div>
+					</li>
+					<% }); %>
+				</ul>
+			</div>
+			</div>
+			<% } else { %>
+			<%- include partials/notask %>
+			<% } %>
+	</main>
+
+	<footer>
+		<%- include partials/footer %>
+	</footer>
+
+	<%- include partials/htmlscripts %>
+
+</body>
+
+</html>

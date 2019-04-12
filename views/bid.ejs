@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%- include partials/htmlhead %>
+</head>
+
+<body>
+
+  <header>
+    <%- include partials/header %>
+  </header>
+  <main>
+    <div class="container">
+      <div class="row">
+        <img src="images/bidding.png" class="img-thumbnail mx-auto d-block" style="width:10%; height:10%; border:0;">
+      </div>
+      <h5 class="font-weight-bold text-center">Place your bid</h5>
+      <br />
+      <div class="card text-center">
+        <div class="card-body">
+          <form class="form-register" method="post" action="bid_task">
+            <div class="form-group mb-3">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-2 my-auto">
+                    <div class="form-group my-auto">
+                      <h5 class="mt-0">Task: </h5>
+                    </div>
+                  </div>
+                  <div class="col-sm-7 my-auto">
+                    <div class="form-group">
+                      <h5 class="lead">
+                        <%= task.title %>
+                      </h5>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 form-sm mt-2 my-auto">
+                    <button type="submit" class="btn btn-info" name="bid" value="<%= task.taskid %>">Place
+                      bid!</button>
+                  </div>
+                </div>
+                <hr />
+                <div class="row justify-content-center">
+                  <h6 class="lead">Other bidders:</h6>
+
+                  <ul class="list-group">
+                    <% bids.forEach(function(bid) { %>
+                    <% if(bid.username===userinfo.user) { %>
+                    <li class="list-group-item bg-primary">
+                      <% } else { %>
+                    <li class="list-group-item">
+                      <% } %>
+                      <div class="row justify-content-center">
+                        <div class="col-8 my-auto">
+                          <% if(bid.username===userinfo.user) { %>
+                          <h6 class="lead">You bidded!</h6>
+                          <% } else { %>
+                          <h6><%= bid.firstname %>&nbsp;<%= bid.lastname %></h6>
+                          <% } %>
+                          <small>Bidded at <%= bid.timeplaced %>hr</small>
+                        </div>
+                      </div>
+                    </li>
+                    <% }); %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+  </main>
+
+  <footer>
+    <%- include partials/footer %>
+  </footer>
+
+  <%- include partials/htmlscripts %>
+
+  <script type="text/javascript">
+    $(function () {
+      $('#datetimepicker1').datetimepicker();
+    });
+  </script>
+</body>
+
+</html>
