@@ -25,7 +25,7 @@ Each application must provide at least the following functionalities.
 For the final project demo, your application’s database should be loaded with reasonably large tables. To generate data for your application, you can use some online data generators (e.g., https://mockaroo.com, https://www.generatedata.com) or write your own program.
 
 ## ER Model
-Current model at CS2102 ER Diagram.png
+Latest version refer to report.
 
 ## Developers' Guide
 
