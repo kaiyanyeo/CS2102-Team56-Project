@@ -143,6 +143,39 @@ CREATE TRIGGER check_assigns_from_tasks
 	BEFORE UPDATE ON Tasks
 	FOR EACH ROW
 	EXECUTE PROCEDURE check_existing_assignments();
+	
+CREATE OR REPLACE FUNCTION check_existing_biddings() RETURNS trigger AS $ret$
+	DECLARE
+		mycursor CURSOR FOR SELECT employeeID FROM Biddings b WHERE b.taskID = NEW.taskID;
+		eID varchar(32); aID INTEGER; scheduleStart TIMESTAMP; scheduleEnd TIMESTAMP; taskStart TIMESTAMP; taskEnd TIMESTAMP; taskDuration INTEGER;
+	BEGIN
+		OPEN mycursor;
+		SELECT startDate FROM Tasks t WHERE t.taskID = NEW.taskID INTO taskStart;
+		SELECT duration FROM Tasks t WHERE t.taskID = NEW.taskID INTO taskDuration;
+		taskEnd := taskStart + (taskDuration * INTERVAL '1 hours');
+		LOOP
+			FETCH mycursor INTO eID;
+			EXIT WHEN NOT FOUND;
+			SELECT assignID FROM Assigns a WHERE a.employeeID = eID INTO aID;
+			SELECT startDate FROM Tasks t WHERE t.taskID = (SELECT taskID FROM Assigns a WHERE a.assignID = aID) INTO scheduleStart;
+			SELECT scheduleStart + (duration * INTERVAL '1 hours') FROM Tasks t WHERE t.taskID = (SELECT taskID FROM Assigns a WHERE a.assignID = aID) INTO scheduleEnd;
+			IF (taskStart < scheduleStart AND taskEnd > scheduleStart) OR
+				(taskStart = scheduleStart AND taskEnd = scheduleEnd) OR
+				(taskStart > scheduleStart AND taskStart < scheduleEnd) OR
+				(scheduleStart >= taskStart AND scheduleEnd < taskEnd) THEN
+				RAISE NOTICE 'DELETE CLASH BIDDING % taskID %', eID, NEW.taskID;
+				EXECUTE 'DELETE FROM Biddings b WHERE b.employeeID = $1 AND b.taskID = $2;' USING eID, NEW.taskID;
+			END IF;
+		END LOOP;
+		CLOSE mycursor;
+		RETURN NEW;
+	END;
+$ret$ LANGUAGE plpgsql;	
+
+CREATE TRIGGER check_biddings_from_tasks
+	AFTER UPDATE ON Tasks
+	FOR EACH ROW
+	EXECUTE PROCEDURE check_existing_biddings();
 
 -- Prevent insert if there is clash in schedule/existing bids
 CREATE OR REPLACE FUNCTION check_clash() RETURNS trigger AS $ret$

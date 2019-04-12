@@ -85,6 +85,8 @@ INSERT INTO Biddings (employeeID, taskId, timePlaced) VALUES
 ('bobby@hotmail.com', 6, '2019-01-03 15:58:35'),
 ('test@hello.com', 5, '2019-01-04 09:28:35');
 
+--UPDATE Tasks SET startdate = '2019-04-28 19:21:05', duration = 1 WHERE taskID = 6;
+
 INSERT INTO Assigns (taskID, employeeID) VALUES
 (1, 'bobby@hotmail.com'),	-- completed
 (3, 'mary@gmail.com'),	-- not completed
@@ -93,7 +95,8 @@ INSERT INTO Assigns (taskID, employeeID) VALUES
 
 INSERT INTO Schedules (employeeID, assignID) VALUES
 ('test@hello.com', 1),
-('mary@gmail.com', 2);
+('mary@gmail.com', 2),
+('mark@yahoo.com', 3);
 
 INSERT INTO History (employeeName, employerName, assignid, rating, comments) VALUES
 ('bobby@hotmail.com', 'dfsad@example.com', '1', 5, 'Good at carrying boxes. Finished very quickly');
