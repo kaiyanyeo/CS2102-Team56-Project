@@ -23,6 +23,8 @@ function initRouter(app) {
 	app.get('/task', passport.authMiddleware(), task);
 	app.get('/create', passport.authMiddleware(), create);
 	app.get('/users', passport.authMiddleware(), users);
+	// app.get('/employers', passport.authMiddleware(), employers);
+	// app.get('/employees', passport.authMiddleware(), employees);
 
 	/* PROTECTED POST */
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
