@@ -27,6 +27,7 @@ function initRouter(app) {
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
 	app.post('/edit_task', passport.authMiddleware(), edit_task);
 	app.post('/create_task', passport.authMiddleware(), create_task);
+	app.post('/search', passport.authMiddleware(), search);
 
 	/* LOGIN */
 	app.post('/login', passport.authenticate('local', {
@@ -269,6 +270,26 @@ function create_task(req, res, next) {
 		} else {
 			console.log('Task created');
 			res.redirect('/dashboard?create=success');
+		}
+	});
+}
+
+function search(req, res, next) {
+	var info = {
+		user: req.user.username,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname
+	}
+	var searchterm = req.body.searchterm;
+	
+	pool.query(sql_queries.query.search_task, [searchterm, req.user.username], (err, data) => {
+		if (err) {
+			console.error("Error in searching", err);
+			res.redirect('/browse?search=fail');
+		} else {
+			console.log('Task found');
+			var matches = data.rows;
+			res.render('browse', { auth: true, userinfo: info, tasks: matches });
 		}
 	});
 }
