@@ -25,9 +25,13 @@ sql.query = {
 
     // Complex queries
     // Get Number of Tasks posted by each employer
-    get_num_tasks: 'SELECT e1.username, count(*) from Employers e1 LEFT JOIN Tasks t1 ON e1.employerusername = t1.employerusername GROUP BY e1.username',
+    get_num_tasks: 'SELECT e1.username, count(*) as numposted from Employers e1 INNER JOIN Tasks t1 ON e1.username = t1.employername WHERE e1.username <> $1 GROUP BY e1.username',
     // Get Number of Jobs done by the Employee in the past
-    get_num_history: 'SELECT count(*) FROM Employee e1 LEFT JOIN History h1 ON e1.employeeusername = h1.employeeusername GROUP BY e1.employeeusername',
+    get_num_history: 'SELECT e1.username, h1.employername, count(*) as numhistory FROM Employees e1 INNER JOIN History h1 ON e1.username = h1.employeename WHERE e1.username <> $1 GROUP BY e1.username, h1.employername',
+    // Join of previous two queries
+    get_tasks_and_history: 'WITH postedtasks AS (SELECT e1.username, count(*) AS numposted FROM Employers e1 INNER JOIN Tasks t1 ON e1.username = t1.employername GROUP BY e1.username), \
+        completedtasks AS (SELECT e1.username, count(*) AS numhistory FROM Employees e1 INNER JOIN History h1 ON e1.username = h1.employeename GROUP BY e1.username, h1.employername) \
+        SELECT p.username, coalesce(numposted,0) as posted, coalesce(numhistory,0) as completed FROM postedTasks p LEFT OUTER JOIN completedtasks c on p.username=c.username WHERE p.username <> $1',
 
     // Get user with the most task at hand right for each category
     get_busiest_user: 'SELECT c1.employeeUserName, categoryName, count(*) FROM (appuser.employee e1 LEFT JOIN taskAction.assigns a1 ON e1.employeeUserName = a1.employeeUserName as c1) NATURAL JOIN taskAction.category c2 GROUP BY employeeUserName, categoryName'

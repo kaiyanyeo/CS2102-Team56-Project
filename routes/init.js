@@ -166,13 +166,13 @@ function users(req, res, next) {
 		lastname: req.user.lastname
 	}
 
-	pool.query(sql_queries.query.get_categories, (err, data) => {
+	pool.query(sql_queries.query.get_tasks_and_history, [info.user], (err, data) => {
 		if (err) {
-			console.log("Error in getting users", err);
-			res.render('users', { auth: true, userinfo: info, categories: null });
+			console.log("Error in getting tasks and history", err);
+			res.render('users', { auth: true, userinfo: info, information: null });
 		} else {
-			// console.log(data.rows);
-			res.render('users', { auth: true, userinfo: info, categories: data.rows });
+			console.log('Obtained tasks and history');
+			res.render('users', { auth: true, userinfo: info, information: data.rows });
 		}
 	});
 }

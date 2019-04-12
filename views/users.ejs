@@ -35,7 +35,17 @@
 					style="width:10%; height:10%; border:0;">
 			</div>
 			<div class="row justify-content-center">
+				<div class="col-sm-4 text-center">
+					<a class="btn btn-info" href="/users/employers">View Employers Only</a>
+				</div>
+				<div class="col-sm-4 text-center">
+					<a class="btn btn-info" href="/users/employees">View Employees Only</a>
+				</div>
+			</div>
+			<br />
+			<div class="row justify-content-center">
 				<div class="col-sm-8">
+					<% if(information) { %>
 					<table class="table table-striped">
 						<thead>
 							<tr>
@@ -45,13 +55,18 @@
 							</tr>
 						</thead>
 						<tbody>
+							<% information.forEach(function(row) { %>
 							<tr>
-								<th scope="row">1</th>
-								<td>Mark</td>
-								<td>Otto</td>
+								<th scope="row"><%= row.username %></th>
+								<td><%= row.posted %></td>
+								<td><%= row.completed %></td>
 							</tr>
+							<% }); %>
 						</tbody>
 					</table>
+					<% } else { %>
+						<%- include partials/othersnotfound %>
+					<% } %>
 				</div>
 			</div>
 		</div>
