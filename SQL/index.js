@@ -37,6 +37,12 @@ sql.query = {
         postedWithNames AS (SELECT p.username,numposted,u.firstname, u.lastname FROM postedtasks p INNER JOIN Users u ON p.username = u.username) \
         SELECT p.username, p.firstname, p.lastname, coalesce(numposted,0) as posted, coalesce(numhistory,0) as completed FROM postedWithNames p LEFT OUTER JOIN completedtasks c on p.username=c.username WHERE p.username <> $1',
 
+    // Bid related
+    get_task_bid: 'WITH taskbids AS ( SELECT * FROM Biddings b NATURAL JOIN Tasks ) SELECT * FROM taskbids tb INNER JOIN Users u ON tb.employeeid = u.username WHERE tb.taskid = $1',
+    get_bidtask_owner: 'WITH taskbids AS ( SELECT * FROM Biddings b NATURAL JOIN Tasks t ) SELECT u.username,u.firstname,u.lastname FROM taskbids tb INNER JOIN Users u ON tb.employername = u.username WHERE tb.taskid = $1',
+    place_bid: 'INSERT INTO Biddings (employeeid, taskid, timeplaced) VALUES ($1,$2,$3)',
+    have_bidded: 'SELECT * FROM Biddings WHERE taskid=$1 AND employeeid=$2',
+
     // Get user with the most task at hand right for each category
     get_busiest_user: 'SELECT c1.employeeUserName, categoryName, count(*) FROM (appuser.employee e1 LEFT JOIN taskAction.assigns a1 ON e1.employeeUserName = a1.employeeUserName as c1) NATURAL JOIN taskAction.category c2 GROUP BY employeeUserName, categoryName'
 }

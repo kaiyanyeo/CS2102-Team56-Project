@@ -39,6 +39,7 @@
 									<th scope="col">Start Date/Time</th>
 									<th scope="col">Compensation</th>
 									<th scope="col">Category</th>
+									<th scope="col">Action</th>
 								</tr>
 							</thead>
 
@@ -50,6 +51,12 @@
 									<td><%= task.startdate %></td>
 									<td><%= task.payamt %></td>
 									<td><%= task.categoryname %></td>
+									<td>
+										<a class="btn btn-primary" href="/bid?task=<%= task.taskid %>"
+										role="button">
+											Bid
+										</a>
+									</td>
 								</tr>
 								<% }); %>
 							</tbody>

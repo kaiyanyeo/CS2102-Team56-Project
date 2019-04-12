@@ -25,12 +25,14 @@ function initRouter(app) {
 	app.get('/users', passport.authMiddleware(), users);
 	// app.get('/employers', passport.authMiddleware(), employers);
 	// app.get('/employees', passport.authMiddleware(), employees);
+	app.get('/bid', passport.authMiddleware(), bid);
 
 	/* PROTECTED POST */
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
 	app.post('/edit_task', passport.authMiddleware(), edit_task);
 	app.post('/create_task', passport.authMiddleware(), create_task);
 	app.post('/search', passport.authMiddleware(), search);
+	app.post('/bid_task', passport.authMiddleware(), bid_task);
 
 	/* LOGIN */
 	app.post('/login', passport.authenticate('local', {
@@ -179,6 +181,29 @@ function users(req, res, next) {
 	});
 }
 
+function bid(req, res, next) {
+	var info = {
+		user: req.user.username,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname
+	}
+	var taskinfo = {
+		taskid: req.query.task
+	}
+
+	pool.query(sql_queries.query.get_task_bid, [taskinfo.taskid], (err, data) => {
+		if (err) {
+			console.log("Error in getting bid", err);
+			res.render('bid', { auth: true, userinfo: info, bids: null });
+		} else {
+			taskinfo = data.rows;
+			console.log(data.rows);
+			console.log('Obtained bid details');
+			res.render('bid', { auth: true, userinfo: info, bids: taskinfo });
+		}
+	});
+}
+
 // // POST
 function reg_user(req, res, next) {
 	var firstname = req.body.firstname;
@@ -276,7 +301,7 @@ function search(req, res, next) {
 		lastname: req.user.lastname
 	}
 	var searchterm = req.body.searchterm;
-	
+
 	pool.query(sql_queries.query.search_task, [searchterm, req.user.username], (err, data) => {
 		if (err) {
 			console.error("Error in searching", err);
@@ -285,6 +310,29 @@ function search(req, res, next) {
 			console.log('Task found');
 			var matches = data.rows;
 			res.render('browse', { auth: true, userinfo: info, tasks: matches });
+		}
+	});
+}
+
+function bid_task(req, res, next) {
+	var info = {
+		user: req.user.username,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname
+	}
+	var bidtime = {
+		taskid: req.body.bid,
+		time: new Date()
+	};
+
+	pool.query(sql_queries.query.place_bid, [req.user.username, bidtime.taskid, bidtime.time], (err, data) => {
+		if (err) {
+			console.error("Error in searching", err);
+			res.redirect('/browse?bid=fail');
+		} else {
+			console.log('Task found');
+			var matches = data.rows;
+			res.redirect('/browse');
 		}
 	});
 }
