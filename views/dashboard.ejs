@@ -26,40 +26,31 @@
 			</div>
 			<h5 class="font-weight-bold text-center">Tasks you have posted!</h5>
 			<br />
-			<div id="accordion">
-				<% tasks.forEach(function(task) { %>
-				<div class="accordion" id="accordionExample">
-					<div class="card">
-						<div class="card-header" id="heading<%= task.taskid %>">
-							<div class="row">
-								<h2 class="mb-0 col-8">
-									<button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-										data-target="#collapse<%= task.taskid %>" aria-expanded="false"
-										aria-controls="collapse<%= task.taskid %>">
-										<%= task.title %>
-									</button>
-								</h2>
-								<div class="col-4 btn-group" role="group" aria-label="Task Buttons">
-									<a class="btn btn-primary col-6" href="/task?function=edit&num=<%= task.taskid %>"
-										role="button">
-										Edit
-									</a>
-									<a class="btn btn-danger col-6" href="/task?function=delete&num=<%= task.taskid %>"
-										role="button">
-										Delete
-									</a>
-								</div>
+			<div class="row justify-content-center">
+			<div id="container" style="width: 70%;">
+				<ul class="list-group">
+					<% tasks.forEach(function(task) { %>
+					<li class="list-group-item">
+						<div class="row">
+							<div class="col-8 my-auto">
+								<h6><%= task.title %></h6>
+								<small><%= task.startdate %>, offering $<%= task.payamt %> for <%= task.duration %>hr</small>
+							</div>
+							<div class="col-4 btn-group" role="group" aria-label="Task Buttons">
+								<a class="btn btn-primary col-6" href="/task?function=edit&num=<%= task.taskid %>"
+									role="button">
+									Edit
+								</a>
+								<a class="btn btn-danger col-6" href="/task?function=delete&num=<%= task.taskid %>"
+									role="button">
+									Delete
+								</a>
 							</div>
 						</div>
-						<div id="collapse<%= task.taskid %>" class="collapse"
-							aria-labelledby="heading<%= task.taskid %>" data-parent="#accordionExample">
-							<div class="card-body">
-								you probably haven't heard of them accusamus labore sustainable VHS.
-							</div>
-						</div>
-					</div>
+					</li>
 					<% }); %>
-				</div>
+				</ul>
+			</div>
 			</div>
 			<% } else { %>
 			<%- include partials/notask %>
@@ -71,7 +62,7 @@
 	</footer>
 
 	<%- include partials/htmlscripts %>
-	
+
 </body>
 
 </html>

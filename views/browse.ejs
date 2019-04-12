@@ -19,35 +19,43 @@
 			</div>
 			<h5 class="font-weight-bold text-center">Looking for a quick job?</h5>
 			<br />
-			<form class="form-inline my-2 my-lg-0" method="post" action="/search">
+			<!-- <form class="form-inline my-2 my-lg-0" method="post" action="/search">
 				<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
 					name="searchterm" required>
 				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-			</form>
+			</form> -->
 			<br />
 			<% if(tasks.length==0) { %>
 			<%- include partials/notaskfound %>
 			<% } else { %>
-			<% tasks.forEach(function(task) { %>
-			<div class="accordion" id="accordionExample">
-				<div class="card">
-					<div class="card-header" id="heading<%= task.taskid %>">
-						<h2 class="mb-0">
-							<button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-								data-target="#collapse<%= task.taskid %>" aria-expanded="false"
-								aria-controls="collapse<%= task.taskid %>">
-								<%= task.title %> (Posted by <%= task.employername %>)
-							</button>
-						</h2>
-					</div>
-					<div id="collapse<%= task.taskid %>" class="collapse" aria-labelledby="heading<%= task.taskid %>"
-						data-parent="#accordionExample">
-						<div class="card-body">
-							testing123
-						</div>
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-sm-8">
+						<table class="table table-striped" id="usersTable">
+							<thead>
+								<tr>
+									<th scope="col">Posted by</th>
+									<th scope="col">Job Title</th>
+									<th scope="col">Start Date/Time</th>
+									<th scope="col">Compensation</th>
+									<th scope="col">Category</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<% tasks.forEach(function(task) { %>
+								<tr>
+									<td><%= task.firstname %>&nbsp;<%= task.lastname %></td>
+									<td><%= task.title %></td>
+									<td><%= task.startdate %></td>
+									<td><%= task.payamt %></td>
+									<td><%= task.categoryname %></td>
+								</tr>
+								<% }); %>
+							</tbody>
+						</table>
 					</div>
 				</div>
-				<% }); %>
 			</div>
 			<% } %>
 		</div>
@@ -61,6 +69,11 @@
 	</footer>
 
 	<%- include partials/htmlscripts %>
+	<script>
+		$(document).ready(function () {
+			$('#usersTable').DataTable();
+		});
+	</script>
 
 </body>
 
