@@ -25,7 +25,7 @@ Each application must provide at least the following functionalities.
 For the final project demo, your application’s database should be loaded with reasonably large tables. To generate data for your application, you can use some online data generators (e.g., https://mockaroo.com, https://www.generatedata.com) or write your own program.
 
 ## ER Model
-Current model [here](CS2102 ER Diagram.png)
+Current model at CS2102 ER Diagram.png
 
 ## Developers' Guide
 
@@ -43,7 +43,7 @@ Run the `SQL/tables.sql` script in your PostgreSQL database to create the tables
 Run the `SQL/dummy_data.sql` script in your PostgreSQL database to populate the tables with some dummy data. Mostly for testing.
 
 ### Tech stack
-DBMS: PostgreSQL
-Backend: ExpressJS
-Frontend: HTML (in EJS views), CSS, Javascript, Bootstrap
-Others: PassportJS for authentication
+- DBMS: PostgreSQL
+- Backend: ExpressJS
+- Frontend: HTML (in EJS views), CSS, Javascript, Bootstrap
+- Others: PassportJS for authentication
