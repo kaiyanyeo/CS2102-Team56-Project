@@ -187,19 +187,24 @@ function bid(req, res, next) {
 		firstname: req.user.firstname,
 		lastname: req.user.lastname
 	}
-	var taskinfo = {
-		taskid: req.query.task
-	}
+	var task = {};
 
-	pool.query(sql_queries.query.get_task_bid, [taskinfo.taskid], (err, data) => {
+	pool.query(sql_queries.query.get_single_task, [req.query.task], (err, data) => {
 		if (err) {
 			console.log("Error in getting bid", err);
-			res.render('bid', { auth: true, userinfo: info, bids: null });
+			res.render('bid', { auth: true, userinfo: info, task: null, bids: null });
 		} else {
-			taskinfo = data.rows;
-			console.log(data.rows);
-			console.log('Obtained bid details');
-			res.render('bid', { auth: true, userinfo: info, bids: taskinfo });
+			task = data.rows[0];
+			pool.query(sql_queries.query.get_task_bid, [req.query.task], (err, data) => {
+				if (err) {
+					console.log("Error in getting bid", err);
+					res.render('bid', { auth: true, userinfo: info, task: task, bids: null });
+				} else {
+					console.log(data.rows);
+					console.log('Obtained bid details');
+					res.render('bid', { auth: true, userinfo: info, task: task, bids: data.rows });
+				}
+			});
 		}
 	});
 }
